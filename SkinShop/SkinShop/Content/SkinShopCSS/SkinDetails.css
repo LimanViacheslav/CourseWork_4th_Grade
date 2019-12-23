@@ -1,0 +1,43 @@
+﻿.priceblock {
+    border: 2px solid green;
+    border-radius: 5px;
+    float: right;
+    background-color: none;
+    padding: 1%;    
+}
+
+.favorite {
+    float: right;
+    margin: 1%;
+    padding-left: 3%;
+    padding-right: 3%;
+    text-decoration: none;
+    color: gray;
+    font-size: 20px;
+    border: 3px solid gray;
+}
+
+    .favorite:hover {
+        color: #FFBE00;
+        transform: scale(1.05);
+        border-color: #FFBE00;
+        transition-duration: 0.3s;
+        background-color: #E4CE8E;
+    }
+
+.basket {
+    font-size: 20px;
+    margin: 1%;
+    float: right;
+    color: gray;
+    border: 3px solid gray;
+    text-decoration: none;
+}
+
+.basket:hover {
+    color: green;
+    border-color: green;
+    transform: scale(1.05);
+    transition-duration: 0.3s;
+    background-color: lightgreen;
+}

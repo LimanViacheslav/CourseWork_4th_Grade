@@ -1,0 +1,65 @@
+﻿@model ICollection<SkinShop.Models.SkinShop.SkinDM>
+@{
+    ViewBag.Title = "Home Page";
+}
+
+@Styles.Render("~/Content/SkinShopCSS/Index.css")
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-2 col-xs-12">
+
+        </div>
+        <div class="col-md-10 col-xs-12">
+            <div class="row">
+                @foreach (var i in Model)
+                {
+                    <div class="col-md-4 block">
+                        <a href="@Url.Action("SkinDetails","Home",new { id=i.Id})" class="link">
+                            <div class="image">
+                                @if (i.Images.FirstOrDefault() != null)
+                                {
+                                    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text">
+                                }
+                                else
+                                {
+                                    <di>Lol</di>
+                                }
+                            </div>
+                            <div class="text">
+                                <div class="name">
+                                    @i.Name
+                                </div>
+                                <div class="price">
+                                    @if (i.Sale > 0)
+                                    {
+                                        <div class="oldprice">@i.Price uah</div>
+                                        <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="newprice">@i.Price uah</div>
+                                    }
+                                </div>
+                                <div class="characteristics">
+                                    <div class="gamename">
+                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @i.Game.Name
+                                    </div>
+                                    <div class="type">
+                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @i.SkinType.TypeName
+                                    </div>
+                                    <div class="rarity" style="color: @i.SkinRarity.Color">
+                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @i.SkinRarity.RarityName
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<input name="Images" type="file" accept=".jpg" class="form-control-file" required />
+<input name="Alts" placeholder="Описание" class="form-control" required />

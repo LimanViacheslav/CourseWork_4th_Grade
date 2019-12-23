@@ -1,0 +1,52 @@
+﻿@model SkinShop.Models.SkinShop.SkinDM
+
+@{
+    ViewBag.Title = "SkinDetails";
+}
+
+@Styles.Render("~/Content/SkinShopCSS/SkinDetails.css")
+
+<h2>@Model.Name</h2>
+
+<div class="container-fluid">
+    <div class="col-md-5 col-xs-12">
+
+    </div>
+    <div class="col-md-7 col-xs-12">
+        <div class="text">
+            <div class="gamename">
+                @Model.Game.Name
+            </div>
+            <div class="row">
+                <div class="priceblock col-md-8 col-md-offset-4">
+                    @if (Model.Sale > 0)
+                    {
+                        <div class="oldprice">@Model.Price uah</div>
+                        <div class="newprice">@(Model.Price - ((Model.Price * Model.Sale) / 100)) uah</div>
+                    }
+                    else
+                    {
+                        <div class="newprice">@Model.Price uah</div>
+                    }
+                        <div class="buttons">
+                            <a class="btn favorite" href="@Url.Action("AddToFavorite", "Client", new { id = Model.Id})">
+                                <span class="glyphicon glyphicon-heart-empty"></span>
+                            </a>
+                            <a class="btn basket" href="@Url.Action("AddToBasket", "Client", new { id = Model.Id})">
+                                Добавить в корзину
+                            </a>
+                        </div>
+                </div>
+                <div style="color: @Model.SkinRarity.Color">
+                    @Model.SkinRarity.RarityName
+                </div>
+                <div>
+                    @Model.SkinType.TypeName
+                </div>
+                <div>
+                    @Model.Description
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

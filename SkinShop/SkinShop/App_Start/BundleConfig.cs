@@ -33,6 +33,13 @@ namespace SkinShop
                      "~/Content/SkinShopCSS/Layout.css"));
             bundles.Add(new StyleBundle("~/Content/SkinShopCSS/PageNotFound.css").Include(
                      "~/Content/SkinShopCSS/PageNotFound.css"));
+
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Basket.css").Include(
+                     "~/Content/SkinShopCSS/Basket.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Orders.css").Include(
+                     "~/Content/SkinShopCSS/Orders.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Favorites.css").Include(
+                     "~/Content/SkinShopCSS/Favorites.css"));
         }
     }
 }

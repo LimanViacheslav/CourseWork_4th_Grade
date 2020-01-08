@@ -1,4 +1,5 @@
-﻿using SkinShop.BLL.SkinShop.Services;
+﻿using SkinShop.BLL.Identity.Infrastructure;
+using SkinShop.BLL.SkinShop.Services;
 using SkinShop.BLL.SkinShop.SkinShopDTO;
 using SkinShop.Mappers;
 using SkinShop.Models.ViewModels;
@@ -29,7 +30,7 @@ namespace SkinShop.Controllers
             {
                 SkinDTO skin = new SkinDTO() { Name = item.Name, Price = item.Price, Sale = item.Sale};
 
-                if(item.Image != null)
+                if (item.Image != null)
                 {
                     ImageDTO image = new ImageDTO();
 
@@ -37,27 +38,12 @@ namespace SkinShop.Controllers
                     using (var reader = new BinaryReader(item.Image.InputStream))
                         image.Photo = reader.ReadBytes(item.Image.ContentLength);
 
-                    skin.Images = new List<ImageDTO>() { image};
-                }
+                    skin.Images = new List<ImageDTO>();
+                    skin.Images.Add(image);
+               }
+                if(item.Game != "")
+                    skin.Game = new GameDTO() { Name = item.Game };
 
-                //if(item.Game != null)
-                //{
-                //    GameDTO game = new GameDTO() { Name = item.Game.Name, IsThingGame = item.Game.IsThingGame, GameURL = item.Game.GameURL, Genre = item.Game.Genre, Type = item.Game.Type };
-
-                //    if(item.Game.Image != null)
-                //    {
-                //        ImageDTO image = new ImageDTO();
-
-                //        image.Text = item.Game.Alt;
-                //        using (var reader = new BinaryReader(item.Game.Image.InputStream))
-                //            image.Photo = reader.ReadBytes(item.Game.Image.ContentLength);
-
-                //        game.Images = new List<ImageDTO>() { image };
-                //    }
-
-                //    skin.Game = game;
-                //}
-                skin.Game = new GameDTO() { Name = "Fortnite" };
                 if(item.SkinRarity != "")
                 {
                     SkinRarityDTO skinRarity = new SkinRarityDTO() { Color = item.SkinRarityColor, RarityName = item.SkinRarity };
@@ -73,8 +59,10 @@ namespace SkinShop.Controllers
                 if (item.Description != "")
                     skin.Description = item.Description;
 
-                _service.ServiceForCRUD.CreateSkin(skin);
-                return RedirectToAction("Message", new { message = "Скин успешно создан" });
+                OperationDetails result = _service.ServiceForCRUD.CreateSkin(skin);
+                ViewBag.Result = result.Message;
+                ViewBag.Status = result.Succedeed;
+                return View();
             }
             else
             {

@@ -2,9 +2,8 @@
 using SkinShop.BLL.Identity.Services;
 using SkinShop.BLL.SkinShop.Interfaces;
 using SkinShop.BLL.SkinShop.Mappers;
-using SkinShop.DAL.Identity.Repositories;
-using SkinShop.DAL.SkinShop.Interfaces;
-using SkinShop.DAL.SkinShop.Repositories;
+using SkinShop.DL.Interfaces.SkinShop;
+using SkinShop.DL.Repositories.SkinShop;
 
 namespace SkinShop.BLL.SkinShop.Services
 {
@@ -12,20 +11,18 @@ namespace SkinShop.BLL.SkinShop.Services
     {
         private IService _storeService;
 
-        private IUserService _userService;
-
         private IServiceCRUD _serviceForCRUD;
 
         private ICommonOperations _commonOperations;
 
-        private IUnitOfWorkSkinShop _unitOfWork;
+        private IUnitOfWorK _unitOfWork;
 
         private MappersForDTO _MapperDTO;
 
         public Service()
         {
             _MapperDTO = new MappersForDTO();
-            _unitOfWork = new UnitOfWorkSkinShop("DefaultConnection");
+            _unitOfWork = new UnitOfWork("DefaultConnection");
         }
 
         public IService StoreService
@@ -35,16 +32,6 @@ namespace SkinShop.BLL.SkinShop.Services
                 if (_storeService != null)
                     return _storeService;
                 return new ApplicationService(_unitOfWork);
-            }
-        }
-
-        public IUserService UserService
-        {
-            get
-            {
-                if (_userService != null)
-                    return _userService;
-                return new UserService(new UnitOfWorkIdentity("DefaultConnection"));
             }
         }
 

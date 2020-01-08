@@ -1,6 +1,5 @@
 ﻿using SkinShop.BLL.Identity.IdentityDTO;
-using SkinShop.DAL.Identity.Entities;
-using SkinShop.DAL.SkinShop.Entities;
+using SkinShop.DL.Entities.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;

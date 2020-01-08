@@ -56,13 +56,13 @@
       <HintPath>..\packages\EntityFramework.6.3.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -160,6 +160,7 @@
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -180,6 +181,7 @@
     <Compile Include="Models\SkinShop\SkinTypeDM.cs" />
     <Compile Include="Models\ViewModels\GameCreateVM.cs" />
     <Compile Include="Models\ViewModels\SkinCreateVM.cs" />
+    <Compile Include="Models\ViewModels\SkinDetailsView.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -189,8 +191,11 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\background.jpg" />
     <Content Include="Content\Images\PageNotFound.jpg" />
+    <Content Include="Content\SkinShopCSS\Basket.css" />
+    <Content Include="Content\SkinShopCSS\Favorites.css" />
     <Content Include="Content\SkinShopCSS\Index.css" />
     <Content Include="Content\SkinShopCSS\Layout.css" />
+    <Content Include="Content\SkinShopCSS\Orders.css" />
     <Content Include="Content\SkinShopCSS\PageNotFound.css" />
     <Content Include="Content\SkinShopCSS\SkinDetails.css" />
     <Content Include="favicon.ico" />
@@ -230,6 +235,9 @@
     <Content Include="Views\Home\PageNotFound.cshtml" />
     <Content Include="Views\Admin\Message.cshtml" />
     <Content Include="Views\Admin\CreateSkin.cshtml" />
+    <Content Include="Views\Client\Basket.cshtml" />
+    <Content Include="Views\Client\Favorites.cshtml" />
+    <Content Include="Views\Client\Orders.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

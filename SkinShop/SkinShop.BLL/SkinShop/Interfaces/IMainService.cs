@@ -1,6 +1,5 @@
 ﻿using SkinShop.BLL.Identity.Interfaces;
 using SkinShop.BLL.SkinShop.Mappers;
-using SkinShop.DAL.SkinShop.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

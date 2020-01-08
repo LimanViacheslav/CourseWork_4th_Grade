@@ -60,42 +60,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Identity\Entities\ApplicationRole.cs" />
-    <Compile Include="Identity\Entities\ClientProfile.cs" />
-    <Compile Include="Identity\Entities\User.cs" />
-    <Compile Include="Identity\Identity\ApplicationRoleManager.cs" />
-    <Compile Include="Identity\Identity\ApplicationUserManager.cs" />
-    <Compile Include="Identity\Interfaces\IClientManager.cs" />
-    <Compile Include="Identity\Interfaces\IUnitOfWorkIdentity.cs" />
-    <Compile Include="Identity\Repositories\ClientManager.cs" />
-    <Compile Include="Identity\Repositories\UnitOfWorkIdentity.cs" />
-    <Compile Include="SkinShop\EF\Context.cs" />
-    <Compile Include="SkinShop\EF\DbInitializer.cs" />
-    <Compile Include="SkinShop\Entities\Favorites.cs" />
-    <Compile Include="SkinShop\Entities\ForIsDeleted.cs" />
-    <Compile Include="SkinShop\Entities\Game.cs" />
-    <Compile Include="SkinShop\Entities\Image.cs" />
-    <Compile Include="SkinShop\Entities\Order.cs" />
-    <Compile Include="SkinShop\Entities\Basket.cs" />
-    <Compile Include="SkinShop\Entities\OrderCount.cs" />
-    <Compile Include="SkinShop\Entities\Skin.cs" />
-    <Compile Include="SkinShop\Entities\SkinRarity.cs" />
-    <Compile Include="SkinShop\Entities\SkinType.cs" />
-    <Compile Include="SkinShop\Interfaces\IAdd.cs" />
-    <Compile Include="SkinShop\Interfaces\IDelete.cs" />
-    <Compile Include="SkinShop\Interfaces\IForId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkinShop\Interfaces\IShow.cs" />
-    <Compile Include="SkinShop\Interfaces\IUnitOfWorkSkinShop.cs" />
-    <Compile Include="SkinShop\Interfaces\IUpdate.cs" />
-    <Compile Include="SkinShop\Repositories\AbstractRepository.cs" />
-    <Compile Include="SkinShop\Repositories\Repository.cs" />
-    <Compile Include="SkinShop\Repositories\UnitOfWork.cs" />
-    <Compile Include="SkinShop\Requests\ApplicationRequests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SkinShop\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

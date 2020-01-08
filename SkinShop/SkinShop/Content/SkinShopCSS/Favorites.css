@@ -1,0 +1,26 @@
+﻿.block {
+    height: 15em;
+    margin-bottom: 2%;
+}
+
+.text {
+    float: right;
+    padding: 2%;
+}
+
+.image {
+    float: left;
+}
+
+.imgcustom {
+    height: 15em;
+}
+
+.deletebutton {
+    margin-top: 2%;
+}
+
+.commonblock {
+    border: 3px solid gray;
+    border-radius: 5px;
+}

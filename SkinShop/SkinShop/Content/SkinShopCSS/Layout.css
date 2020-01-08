@@ -20,3 +20,12 @@ footer {
 .nav {
     font-size: 17px;
 }
+
+.right {
+    display: block;
+    float: right;
+}
+
+a:active {
+    background-color: red;
+}

@@ -2,9 +2,9 @@
 using SkinShop.BLL.Identity.IdentityDTO;
 using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.Identity.Interfaces;
-using SkinShop.DAL.Identity.Entities;
-using SkinShop.DAL.Identity.Interfaces;
-using SkinShop.DAL.SkinShop.Entities;
+using SkinShop.DL.Entities.Identity;
+using SkinShop.DL.Entities.SkinShop;
+using SkinShop.DL.Interfaces.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,9 +16,9 @@ namespace SkinShop.BLL.Identity.Services
 {
     public class UserService : IUserService
     {
-        IUnitOfWorkIdentity Database { get; set; }
+        IUnitOfWorK Database { get; set; }
 
-        public UserService(IUnitOfWorkIdentity uow)
+        public UserService(IUnitOfWorK uow)
         {
             Database = uow;
         }
@@ -39,7 +39,7 @@ namespace SkinShop.BLL.Identity.Services
                 clientProfile.Basket = new Basket();
                 clientProfile.Favorites = new Favorites();
                 Database.ClientManager.Create(clientProfile);
-                await Database.SaveAsync();
+                Database.Save();
                 return new OperationDetails(true, "Регистрация успешно пройдена", "");
             }
             else
@@ -77,7 +77,7 @@ namespace SkinShop.BLL.Identity.Services
 
         public void Dispose()
         {
-            Database.Dispose();
+            Database.UserManager.Dispose();
         }
     }
 }

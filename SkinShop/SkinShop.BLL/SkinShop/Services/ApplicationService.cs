@@ -4,12 +4,9 @@ using SkinShop.BLL.SkinShop.BusinessModels;
 using SkinShop.BLL.SkinShop.Interfaces;
 using SkinShop.BLL.SkinShop.Mappers;
 using SkinShop.BLL.SkinShop.SkinShopDTO;
-using SkinShop.DAL.Identity.Entities;
-using SkinShop.DAL.Identity.Interfaces;
-using SkinShop.DAL.Identity.Repositories;
-using SkinShop.DAL.SkinShop.Entities;
-using SkinShop.DAL.SkinShop.Interfaces;
-using SkinShop.DAL.SkinShop.Requests;
+using SkinShop.DL.Entities.Identity;
+using SkinShop.DL.Entities.SkinShop;
+using SkinShop.DL.Interfaces.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,20 +17,25 @@ namespace SkinShop.BLL.SkinShop.Services
 {
     public class ApplicationService: IService
     {
-        IUnitOfWorkSkinShop Database { get; set; }
+        IUnitOfWorK Database { get; set; }
         MappersForDTO _mappers = new MappersForDTO();
-        UnitOfWorkIdentity EntityDB = new UnitOfWorkIdentity("DefaultConnection");
 
-        public ApplicationService(IUnitOfWorkSkinShop uow)
+        public ApplicationService(IUnitOfWorK uow)
         {
             Database = uow;
-        }
+        }   
 
-        public OperationDetails MakeOrder(List<SkinDTO> skins, List<int> counts, int? id)
+        public OperationDetails MakeOrder(List<int> skinsId, List<int> counts, string clientName = "")
         {
             Order _order = new Order();
 
             double _price = 0;
+            List<SkinDTO> skins = new List<SkinDTO>();
+            foreach(var i in skinsId)
+            {
+                skins.Add(_mappers.ToSkinDTO.Map<Skin, SkinDTO>(Database.Skins.Get(i)));
+            }
+
             foreach(var i in skins)
             {
                 if(i.Sale>0)
@@ -46,11 +48,11 @@ namespace SkinShop.BLL.SkinShop.Services
                 }
             }
 
-            if (id != null)
+            if (clientName != "")
             {
-                ClientProfile _client = GetClient(Convert.ToInt32(id));
+                ClientProfile _client = GetClient(clientName);
                 _order.Client = _client;
-                _order.ClientId =Convert.ToInt32(_client.Id);
+                _order.ClientId =_client.Id;
             }
 
             _order.OrderTime = DateTime.Now;
@@ -59,9 +61,10 @@ namespace SkinShop.BLL.SkinShop.Services
 
             if (skins != null && counts != null)
             {
+                _order.OrderCounts = new List<OrderCount>() { };
                 for(int i = 0; i < skins.Count; i++)
                 {
-                    _order.OrderCounts.Add(new OrderCount() { Skin = _mappers.ToSkin.Map<SkinDTO, Skin>(skins[i]), Count = counts[i] });
+                    _order.OrderCounts.Add(new OrderCount() { Skin = Database.Skins.Get(skins[i].Id), Count = counts[i] });
                 }
             }
             else
@@ -69,20 +72,21 @@ namespace SkinShop.BLL.SkinShop.Services
                 return new OperationDetails(false, "Не удалось найти скины для заказа", this.ToString());
             }
             Database.Orders.Add(_order);
+            Database.Save();
             return new OperationDetails(true, "Заказ успешно оформлен", this.ToString());
         }
 
-        public OperationDetails ConfirmOrder(int? orderId, int? employeeId)
+        public OperationDetails ConfirmOrder(int? orderId, string employeeName)
         {
             if (orderId != null)
             {
                 Order _order = Database.Orders.Get(Convert.ToInt32(orderId));
 
-                if(employeeId != null)
+                if(employeeName != null)
                 {
-                    User _employee = GetUser(Convert.ToInt32(employeeId));
+                    User _employee = GetUser(employeeName);
                     _order.Employee = _employee;
-                    _order.EmployeeId = Convert.ToInt32(_employee.Id);
+                    _order.EmployeeId = _employee.Id;
                     _order.Status = OrderStatus.Confirmed;
                 }
                 else
@@ -90,6 +94,7 @@ namespace SkinShop.BLL.SkinShop.Services
                     return new OperationDetails(false, "Не удалось найти сотрудника", this.ToString());
                 }
                 Database.Orders.Update(_order);
+                Database.Save();
                 return new OperationDetails(true, "Заказ успешно подтверждён", this.ToString());
             }
             else
@@ -98,11 +103,11 @@ namespace SkinShop.BLL.SkinShop.Services
             }
         }
 
-        public OperationDetails AddToFavorites(SkinDTO skin, int? id)
+        public OperationDetails AddToFavorites(int skinid, string clientName = "")
         {
-            if(id != null)
+            if(clientName != "")
             {
-                ClientProfile _client = GetClient(Convert.ToInt32(id));
+                ClientProfile _client = GetClient(clientName);
                 IEnumerable<Favorites> _result = from f in Database.Favorites.Show()
                           where f.Id == _client.Favorites.Id
                           select f;
@@ -111,16 +116,23 @@ namespace SkinShop.BLL.SkinShop.Services
                     return new OperationDetails(false, "Не удалось найти клиента", this.ToString());
                 }
                 Favorites _favorites;
+                Skin skin = Database.Skins.Get(skinid);
+
+                if(skin == null)
+                    return new OperationDetails(false, "Не удалось найти скин", this.ToString());
                 if (_result != null)
                 {
                     _favorites = _result.FirstOrDefault();
-                    _favorites.FavoritesSkins.Add(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    _favorites.FavoritesSkins.Add(skin);
+                    Database.Favorites.Update(_favorites);
                 }
                 else
                 {
                     _favorites = new Favorites();
-                    _favorites.FavoritesSkins.Add(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    _favorites.FavoritesSkins.Add(skin);
+                    Database.Favorites.Add(_favorites);
                 }
+                Database.Save();
                 return new OperationDetails(true, "Скин успешно добавлен в избранное", this.ToString());
             }
             else
@@ -130,17 +142,22 @@ namespace SkinShop.BLL.SkinShop.Services
           
         }
 
-        public OperationDetails DeleteFromFavorites(SkinDTO skin, int? id)
+        public OperationDetails DeleteFromFavorites(int skinid, string clientName = "")
         {
-            if (id != null)
+            if (clientName != "")
             {
-                ClientProfile _client = GetClient(Convert.ToInt32(id));
+                ClientProfile _client = GetClient(clientName);
                 IEnumerable<Favorites> _result = from f in Database.Favorites.Show()
                                                  where f.Id == _client.Favorites.Id
                                                  select f;
                 if (_result != null)
                 {
-                    _result.FirstOrDefault().FavoritesSkins.Remove(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    Skin skin = Database.Skins.Get(skinid);
+                    if (skin == null)
+                        return new OperationDetails(false, "Не удалось найти скин", this.ToString());
+                    _result.FirstOrDefault().FavoritesSkins.Remove(skin);
+                    Database.Favorites.Update(_result.FirstOrDefault());
+                    Database.Save();
                 }
                 else
                 {
@@ -154,11 +171,29 @@ namespace SkinShop.BLL.SkinShop.Services
             }
         }
 
-        public OperationDetails AddToBasket(SkinDTO skin, int? id)
+        public FavoritesDTO GetFavorites(string clientName)
         {
-            if (id != null)
+            ClientProfile user = GetClient(clientName);
+            return _mappers.ToFavoritesDTO.Map<Favorites, FavoritesDTO>(Database.Favorites.Find(x => x.Id == user.BasketId).FirstOrDefault());
+        }
+
+        public BasketDTO GetBasket(string clientName)
+        {
+            ClientProfile user = GetClient(clientName);
+            return _mappers.ToBasketDTO.Map<Basket, BasketDTO>(Database.Baskets.Find(x => x.Id == user.BasketId).FirstOrDefault());
+        }
+
+        public IEnumerable<OrderDTO> GetOrders(string clientName)
+        {
+            ClientProfile user = GetClient(clientName);
+            return _mappers.ToOrderDTO.Map<IEnumerable<Order>, IEnumerable<OrderDTO>>(Database.Orders.Find(x => x.ClientId == user.Id));
+        }
+
+        public OperationDetails AddToBasket(int skinid, string clientName = "")
+        {
+            if (clientName != "")
             {
-                ClientProfile _client = GetClient(Convert.ToInt32(id));
+                ClientProfile _client = GetClient(clientName);
                 IEnumerable<Basket> _result = from f in Database.Baskets.Show()
                                                  where f.Id == _client.Basket.Id
                                                  select f;
@@ -167,16 +202,23 @@ namespace SkinShop.BLL.SkinShop.Services
                     return new OperationDetails(false, "Не удалось найти клиента", this.ToString());
                 }
                 Basket _basket;
+                Skin skin = Database.Skins.Get(skinid);
+
+                if (skin == null)
+                    return new OperationDetails(false, "Не удалось найти скин", this.ToString());
                 if (_result != null)
                 {
                     _basket = _result.FirstOrDefault();
-                    _basket.Skins.Add(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    _basket.Skins.Add(skin);
+                    Database.Baskets.Update(_basket);
                 }
                 else
                 {
                     _basket = new Basket();
-                    _basket.Skins.Add(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    _basket.Skins.Add(skin);
+                    Database.Baskets.Add(_basket);
                 }
+                Database.Save();
                 return new OperationDetails(true, "Скин успешно добавлен в корзину", this.ToString());
             }
             else
@@ -185,17 +227,23 @@ namespace SkinShop.BLL.SkinShop.Services
             }
         }
 
-        public OperationDetails DeleteFromBasket(SkinDTO skin, int? id)
+        public OperationDetails DeleteFromBasket(int skinid, string clientName = "")
         {
-            if (id != null)
+            if (clientName != "")
             {
-                ClientProfile _client = GetClient(Convert.ToInt32(id));
+                ClientProfile _client = GetClient(clientName);
                 IEnumerable<Basket> _result = from f in Database.Baskets.Show()
                                                  where f.Id == _client.Basket.Id
                                                  select f;
                 if (_result != null)
                 {
-                    _result.FirstOrDefault().Skins.Remove(_mappers.ToSkin.Map<SkinDTO, Skin>(skin));
+                    Skin skin = Database.Skins.Get(skinid);
+
+                    if (skin == null)
+                        return new OperationDetails(false, "Не удалось найти скин", this.ToString());
+                    _result.FirstOrDefault().Skins.Remove(skin);
+                    Database.Baskets.Update(_result.FirstOrDefault());
+                    Database.Save();
                 }
                 else
                 {
@@ -209,16 +257,22 @@ namespace SkinShop.BLL.SkinShop.Services
             }
         }
 
-        public User GetUser(int id)
+        public User GetUser(string userName)
         {
-                User item = EntityDB.ClientManager.GetUser(id);
-                return item;
+            User item = Database.ClientManager.FindUser(x => x.Email == userName);
+            return item;
         }
 
-        public ClientProfile GetClient(int id)
+        public ClientProfile GetClient(string clientName)
         {
-            ClientProfile item = EntityDB.ClientManager.GetClient(id);
-            return item;
+            ClientProfile user = Database.ClientManager.FindClient(x => x.User.Email == clientName);
+            return user;
+        }
+
+        public ClientProfileDTO GetClientDTO(string clientName)
+        {
+            ClientProfile user = Database.ClientManager.FindClient(x => x.User.Email == clientName);
+            return _mappers.ToClientProfileDTO.Map<ClientProfile, ClientProfileDTO>(user);
         }
 
         public bool Pay()

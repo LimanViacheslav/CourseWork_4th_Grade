@@ -6,6 +6,9 @@ using SkinShop.BLL.SkinShop.Services;
 using SkinShop.Mappers;
 using SkinShop.Models.SkinShop;
 using System;
+using SkinShop.Models.ViewModels;
+using SkinShop.Models.Account;
+using SkinShop.BLL.Identity.IdentityDTO;
 
 namespace SkinShop.Controllers
 {
@@ -40,7 +43,33 @@ namespace SkinShop.Controllers
             {
                 SkinDTO result = _service.ServiceForCRUD.GetSkin(id);
                 if(result != null)
-                    return View(_mappers.ToSkinDM.Map<SkinDTO, SkinDM>(result));
+                {
+                    SkinDetailsView skin = new SkinDetailsView();
+                    skin.IsSkinAlreadyInBasket = false;
+                    skin.IsSkinAlreadyInFavorites = false;
+                    skin.Skin = _mappers.ToSkinDM.Map<SkinDTO, SkinDM>(result);
+                    ClientProfileDM client =_mappers.ToClientProfileDM.Map<ClientProfileDTO, ClientProfileDM>(_service.StoreService.GetClientDTO(User.Identity.Name));
+                    if(client != null)
+                    {
+                        foreach(var i in client.Favorites.FavoritesSkins)
+                        {
+                            if(i.Id == id)
+                            {
+                                skin.IsSkinAlreadyInFavorites = true;
+                            }
+                        }
+
+                        foreach (var i in client.Basket.Skins)
+                        {
+                            if (i.Id == id)
+                            {
+                                skin.IsSkinAlreadyInBasket = true;
+                                skin.IsSkinAlreadyInFavorites = true;
+                            }
+                        }
+                    }
+                    return View(skin);
+                }
             }
             return RedirectToAction("PageNotFound");
         }

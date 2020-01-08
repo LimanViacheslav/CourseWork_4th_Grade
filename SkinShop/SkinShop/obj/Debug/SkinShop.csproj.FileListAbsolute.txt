@@ -71,7 +71,6 @@ D:\CourseWork\SkinShop\SkinShop\bin\System.Web.WebPages.Deployment.dll
 D:\CourseWork\SkinShop\SkinShop\bin\System.Web.WebPages.dll
 D:\CourseWork\SkinShop\SkinShop\bin\System.Web.WebPages.Razor.dll
 D:\CourseWork\SkinShop\SkinShop\bin\WebGrease.dll
-D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DAL.dll
 D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.BLL.pdb
 D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.BLL.dll.config
 D:\CourseWork\SkinShop\SkinShop\bin\EntityFramework.xml
@@ -94,8 +93,6 @@ D:\CourseWork\SkinShop\SkinShop\bin\System.Web.WebPages.Razor.xml
 D:\CourseWork\SkinShop\SkinShop\bin\Newtonsoft.Json.xml
 D:\CourseWork\SkinShop\SkinShop\bin\Antlr3.Runtime.pdb
 D:\CourseWork\SkinShop\SkinShop\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
-D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DAL.pdb
-D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DAL.dll.config
 D:\CourseWork\SkinShop\SkinShop\bin\ru\System.Web.Helpers.resources.dll
 D:\CourseWork\SkinShop\SkinShop\bin\ru\System.Web.Mvc.resources.dll
 D:\CourseWork\SkinShop\SkinShop\bin\ru\System.Web.Optimization.resources.dll
@@ -111,3 +108,6 @@ D:\CourseWork\SkinShop\SkinShop\obj\Debug\SkinShop.pdb
 D:\CourseWork\SkinShop\SkinShop\bin\AutoMapper.dll
 D:\CourseWork\SkinShop\SkinShop\bin\AutoMapper.pdb
 D:\CourseWork\SkinShop\SkinShop\bin\AutoMapper.xml
+D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DL.dll
+D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DL.pdb
+D:\CourseWork\SkinShop\SkinShop\bin\SkinShop.DL.dll.config

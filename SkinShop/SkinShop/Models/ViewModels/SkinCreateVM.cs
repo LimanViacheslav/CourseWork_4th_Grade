@@ -31,10 +31,10 @@ namespace SkinShop.Models.ViewModels
         [StringLength(7, MinimumLength = 4, ErrorMessage = "Недопустимая длина")]
         public string SkinRarityColor { get; set; }
 
-        //[Display(Name = "Игра")]
-        //[Required]
-        //[StringLength(100, MinimumLength = 2, ErrorMessage = "Недопустимая длина")]
-        //public virtual GameCreateVM Game { get; set; }
+        [Display(Name = "Игра")]
+        [Required]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "Недопустимая длина")]
+        public virtual string Game { get; set; }
 
         [Display(Name = "Цена")]
         [Required]

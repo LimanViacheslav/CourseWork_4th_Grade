@@ -1,0 +1,101 @@
+﻿body {
+    color: darkgray;
+}
+
+.mainblock {
+    border: 3px solid darkgray;
+    border-radius: 5px;
+}
+
+.linkskin {
+    text-decoration: none !important;
+    color: lightgray !important;
+}
+
+.linkblock {
+    width: 100%;
+    float: left;
+}
+
+.linkblock:hover {
+    background: rgba(0, 0, 0, 0.5);
+    transform: scale(1.05);
+    transition-duration: .3s;
+    border: 1px solid white;
+}
+
+.price {
+    font-size: 16px;
+    text-align: right;
+}
+
+.oldprice {
+    color: gray;
+    text-decoration: line-through;
+}
+
+.newprice {
+    font-size: 20px;
+    color: green;
+}
+
+.image {
+    height: 12.5em;
+    float: left;
+}
+
+.imgcustom {
+    height: 12.5em;
+}
+
+.textskin {
+    float: left;
+    padding: 2%;
+    width: 50%;
+}
+
+.client {
+    margin-top: 2%;
+    width: 100%;
+    font-size: 16px;
+    float: left;
+}
+
+.client a {
+    text-decoration: none !important;
+    color: lightgray !important;
+}
+
+.client:hover {
+    background: rgba(0, 0, 0, 0.3);
+    transition-duration: .3s;
+}
+
+.clientname {
+    width: 50%;
+}
+
+.clientphonenumber {
+    width: 50%;
+}
+
+.skins {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.count {
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+}
+
+.allprice {
+    color: lightgray;
+    font-size: 16px;
+}
+
+.status {
+    color: lightgray;
+    font-size: 16px;
+}

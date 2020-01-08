@@ -1,0 +1,46 @@
+﻿@model SkinShop.Models.SkinShop.FavoritesDM
+
+@{
+    ViewBag.Title = "Favorites";
+}
+
+@Styles.Render("~/Content/SkinShopCSS/Favorites.css")
+
+<h2>Избранное</h2>
+
+<div class="container-fluid">
+    @foreach (var i in Model.FavoritesSkins)
+    {
+        <div class="commonblock row">
+            <div class="block col-md-8 col-md-offset-1">
+                <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
+                    <div class="image">
+                        @if (i.Images.FirstOrDefault() != null)
+                        {
+                            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                        }
+                    </div>
+                    <div class="text">
+                        <div class="name">
+                            @i.Name
+                        </div>
+                        <div class="price">
+                            @if (i.Sale > 0)
+                            {
+                                <div class="oldprice">@i.Price uah</div>
+                                <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                            }
+                            else
+                            {
+                                <div class="newprice">@i.Price uah</div>
+                            }
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="deletebutton col-md-2 col-md-offset-1">
+                <a href="@Url.Action("DeleteFromFavorite", "Client", new { skinid = i.Id })" class="form-control">Удалить</a>
+            </div>
+        </div>
+    }
+</div>

@@ -18,6 +18,5 @@ namespace SkinShop.BLL.SkinShop.Interfaces
         ICollection<GameDTO> GetGames();
         ICollection<SkinTypeDTO> GetTypes();
         ICollection<SkinRarityDTO> GetRarity();
-        ICollection<OrderDTO> GetOredersForUser(int id);
     }
 }

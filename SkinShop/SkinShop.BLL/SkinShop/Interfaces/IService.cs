@@ -1,4 +1,5 @@
-﻿using SkinShop.BLL.Identity.Infrastructure;
+﻿using SkinShop.BLL.Identity.IdentityDTO;
+using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.SkinShop.SkinShopDTO;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,15 @@ namespace SkinShop.BLL.SkinShop.Interfaces
 {
     public interface IService
     {
-        OperationDetails MakeOrder(List<SkinDTO> skins, List<int> counts, int? id);
-        OperationDetails AddToFavorites(SkinDTO skin, int? id);
-        OperationDetails DeleteFromFavorites(SkinDTO skin, int? id);
-        OperationDetails AddToBasket(SkinDTO skin, int? id);
-        OperationDetails DeleteFromBasket(SkinDTO skin ,int? id);
-        OperationDetails ConfirmOrder(int? orderId, int? employeeId);
+        OperationDetails MakeOrder(List<int> skinsId, List<int> counts, string clientName = "");
+        OperationDetails AddToFavorites(int skinId, string clientName = "");
+        OperationDetails DeleteFromFavorites(int skinId, string clientName = "");
+        OperationDetails AddToBasket(int skinId, string clientName = "");
+        OperationDetails DeleteFromBasket(int skinId ,string clientName = "");
+        OperationDetails ConfirmOrder(int? orderId, string employeeName);
+        FavoritesDTO GetFavorites(string clientName = "");
+        BasketDTO GetBasket(string clientName = "");
+        IEnumerable<OrderDTO> GetOrders(string clientName);
+        ClientProfileDTO GetClientDTO(string clientName);
     }
 }

@@ -1,0 +1,16 @@
+﻿.block {
+    width: 100%;
+    height: 15em;
+}
+
+.text {
+    float: right;
+}
+
+.image {
+    float: left;
+}
+
+.imgcustom {
+    height: 200px;
+}

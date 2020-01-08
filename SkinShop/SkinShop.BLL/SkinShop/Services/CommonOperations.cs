@@ -1,7 +1,7 @@
 ﻿using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.SkinShop.Interfaces;
-using SkinShop.DAL.SkinShop.Interfaces;
-using SkinShop.DAL.SkinShop.Repositories;
+using SkinShop.DL.Interfaces.SkinShop;
+using SkinShop.DL.Repositories.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,10 +23,10 @@ namespace SkinShop.BLL.SkinShop.Services
 
     public class CommonOperations: ICommonOperations
     {
-        public IUnitOfWorkSkinShop Database;
+        public IUnitOfWorK Database;
         public CommonOperations()
         {
-            Database = new UnitOfWorkSkinShop("DefaultConnection");
+            Database = new UnitOfWork("DefaultConnection");
         }
 
         public OperationDetails SoftDelete(Tables tables, int id)

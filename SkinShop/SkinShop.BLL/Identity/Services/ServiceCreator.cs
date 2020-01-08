@@ -1,5 +1,5 @@
 ﻿using SkinShop.BLL.Identity.Interfaces;
-using SkinShop.DAL.Identity.Repositories;
+using SkinShop.DL.Repositories.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,7 @@ namespace SkinShop.BLL.Identity.Services
     {
         public IUserService CreateUserService(string connection)
         {
-            return new UserService(new UnitOfWorkIdentity(connection));
+            return new UserService(new UnitOfWork(connection));
         }
     }
 }

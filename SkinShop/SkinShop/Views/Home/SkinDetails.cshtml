@@ -1,4 +1,4 @@
-﻿@model SkinShop.Models.SkinShop.SkinDM
+﻿@model SkinShop.Models.ViewModels.SkinDetailsView
 
 @{
     ViewBag.Title = "SkinDetails";
@@ -6,45 +6,61 @@
 
 @Styles.Render("~/Content/SkinShopCSS/SkinDetails.css")
 
-<h2>@Model.Name</h2>
+<h2 class="text">@Model.Skin.Name</h2>
 
 <div class="container-fluid">
-    <div class="col-md-5 col-xs-12">
-
+    <div class="col-md-8 col-md-offset-0 col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1">
+        <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.Skin.Images.FirstOrDefault().Photo))" alt="@Model.Skin.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
     </div>
-    <div class="col-md-7 col-xs-12">
+    <div class="col-md-4 col-md-offset-0 col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1">
         <div class="text">
             <div class="gamename">
-                @Model.Game.Name
+                @Model.Skin.Game.Name
             </div>
             <div class="row">
-                <div class="priceblock col-md-8 col-md-offset-4">
-                    @if (Model.Sale > 0)
+                <div class="priceblock col-md-12">
+                    @if (Model.Skin.Sale > 0)
                     {
-                        <div class="oldprice">@Model.Price uah</div>
-                        <div class="newprice">@(Model.Price - ((Model.Price * Model.Sale) / 100)) uah</div>
+                        <div class="oldprice">@Model.Skin.Price uah</div>
+                        <div class="newprice">@(Model.Skin.Price - ((Model.Skin.Price * Model.Skin.Sale) / 100)) uah</div>
                     }
                     else
                     {
-                        <div class="newprice">@Model.Price uah</div>
+                        <div class="newprice">@Model.Skin.Price uah</div>
                     }
                         <div class="buttons">
-                            <a class="btn favorite" href="@Url.Action("AddToFavorite", "Client", new { id = Model.Id})">
-                                <span class="glyphicon glyphicon-heart-empty"></span>
-                            </a>
-                            <a class="btn basket" href="@Url.Action("AddToBasket", "Client", new { id = Model.Id})">
-                                Добавить в корзину
-                            </a>
+                            @if (!Model.IsSkinAlreadyInFavorites)
+                            {
+                                <a class="btn favorite" href="@Url.Action("AddToFavorite", "Client", new { skinid = Model.Skin.Id})">
+                                    <span class="glyphicon glyphicon-heart-empty"></span>
+                                </a>
+                            }
+                            else if(!Model.IsSkinAlreadyInBasket)
+                            {
+                                <span class="already">Скин уже в избранном</span>
+                            }
+                            @if (!Model.IsSkinAlreadyInBasket)
+                            {
+                                <a class="btn basket" href="@Url.Action("AddToBasket", "Client", new { skinid = Model.Skin.Id})">
+                                    Добавить в корзину
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="already">Скин уже в корзине</span>
+                            }
                         </div>
                 </div>
-                <div style="color: @Model.SkinRarity.Color">
-                    @Model.SkinRarity.RarityName
-                </div>
-                <div>
-                    @Model.SkinType.TypeName
-                </div>
-                <div>
-                    @Model.Description
+                <div class="characteristics col-md-12">
+                    <div style="color: @Model.Skin.SkinRarity.Color">
+                        <span class="item"><span class="glyphicon glyphicon-record"></span> Редкость: </span> @Model.Skin.SkinRarity.RarityName
+                    </div>
+                    <div>
+                        <span class="item"><span class="glyphicon glyphicon-record"></span> Тип скина:</span> @Model.Skin.SkinType.TypeName
+                    </div>
+                    <div>
+                        <span class="item"><span class="glyphicon glyphicon-record"></span> Описание:</span> @Model.Skin.Description
+                    </div>
                 </div>
             </div>
         </div>

@@ -25,8 +25,7 @@
                     <li>@Html.ActionLink("Скины", "Index", "Home")</li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li>@Html.ActionLink(User.Identity.Name, "Profile", "Account")</li>
-                        if (User.IsInRole("client"))
+                        if (User.IsInRole("user"))
                         {
                             <li>@Html.ActionLink("Заказы", "Orders", "Client")</li>
                             <li>@Html.ActionLink("Корзина", "Basket", "Client")</li>
@@ -41,14 +40,25 @@
                         {
                             <li>@Html.ActionLink("Пользователи", "Users", "Admin")</li>
                         }
-                        <li>@Html.ActionLink("Выйти", "Logout", "Account")</li>
                     }
                     else
                     {
                         <li>@Html.ActionLink("Контакы", "Contact", "Home")</li>
-                        <li>@Html.ActionLink("Войти", "Login", "Account")</li>
                     }
                 </ul>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav right">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <li>@Html.ActionLink("Войти", "Login", "Account")</li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("Личный кабинет", "Profile", "Account")</li>
+                            <li>@Html.ActionLink("Выйти", "Logout", "Account")</li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -63,5 +73,8 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+        $('ul.nav li').each(function () { if (this.getElementsByTagName("a")[0].href == location.href) this.className = "active"; });
+    </script>
 </body>
 </html>

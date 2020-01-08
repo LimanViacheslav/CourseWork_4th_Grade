@@ -1,0 +1,116 @@
+﻿@model SkinShop.Models.SkinShop.BasketDM
+
+@{
+    ViewBag.Title = "Basket";
+}
+
+@Styles.Render("~/Content/SkinShopCSS/Basket.css")
+
+<h2>Корзина</h2>
+
+@{
+    double price = 0;
+    List<double> prices = new List<double>();
+    List<int> discounts = new List<int>();
+
+    foreach (var i in Model.Skins)
+    {
+        prices.Add(i.Price);
+        discounts.Add(i.Sale);
+    }
+}
+
+@if (ViewBag.Status == false)
+{
+    <div class="text-danger">
+        @if (ViewBag.Result != null)
+        {
+            <p>
+                @ViewBag.Result
+            </p>
+        }
+    </div>
+}
+else
+{
+    <div class="text-success">
+        @if (ViewBag.Result != null)
+        {
+            <p>
+                @ViewBag.Result
+            </p>
+        }
+    </div>
+}
+
+
+@using (Html.BeginForm())
+{
+    <input type="hidden" value="@Model.Id" name="Basket.Id" />
+    <div class="container-fluid">
+        @foreach (var i in Model.Skins)
+        {
+            <div class="block">
+                <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
+                    <div class="image">
+                        @if (i.Images.FirstOrDefault() != null)
+                        {
+                            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                        }
+                    </div>
+                    <div class="text">
+                        <div class="name">
+                            @i.Name
+                        </div>
+                        <div class="price">
+                            @if (i.Sale > 0)
+                            {
+                                <div class="oldprice">@i.Price uah</div>
+                                <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                                price += (i.Price - ((i.Price * i.Sale) / 100));
+                            }
+                            else
+                            {
+                                <div class="newprice">@i.Price uah</div>
+                                price += i.Price;
+                            }
+                        </div>
+                    </div>
+                </a>
+                @if (i.Game.IsThingGame)
+                {
+                    <input name="counts" type="number" min="1" max="30" value="1" onchange="ChangeCount(@prices, @discounts)" />
+                }
+                else
+                {
+                    <input name="counts" type="number" value="1" />
+                }
+            </div>
+            <div class="deletebutton">
+                <a href="@Url.Action("DeleteFromBasket", "Client", new { skinid = i.Id })" class="form-control">Удалить</a>
+            </div>
+        }
+    </div>
+    <div class="allprice">
+        Всего к оплате: <span class="sumprice">@price</span>
+    </div>
+    <input type="submit" value="Заказать" />
+}
+
+
+@*<script>
+        function ChangeCount(price, discount) {
+            let counts = document.getElementsByName("counts");
+            let result = 0;
+            for (let i = 0; i < counts.length; i++) {
+                if (discount[i] > 0) {
+                    result += counts[i].value * (price[i] - (price[i] * discount[i] / 100));
+                }
+                else {
+                    result += counts[i].value * price[i];
+                }
+            }
+            let element = document.getElementsByClassName("sumprice");
+            element.innerHTML = result;
+        }
+    </script>*@

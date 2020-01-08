@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using SkinShop.BLL.Identity.IdentityDTO;
 using SkinShop.BLL.SkinShop.SkinShopDTO;
-using SkinShop.DAL.Identity.Entities;
-using SkinShop.DAL.SkinShop.Entities;
+using SkinShop.DL.Entities.Identity;
+using SkinShop.DL.Entities.SkinShop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,7 +84,6 @@ namespace SkinShop.BLL.SkinShop.Mappers
                 return new MapperConfiguration(cfg => cfg.CreateMap<ClientProfile, ClientProfileDTO>()
                 .ForMember(x => x.Basket, c => c.MapFrom(k => ToBasketDTO.Map<Basket, BasketDTO>(k.Basket)))
                 .ForMember(x => x.Favorites, c => c.MapFrom(k => ToFavoritesDTO.Map<Favorites, FavoritesDTO>(k.Favorites)))
-                .ForMember(x => x.Orders, c => c.MapFrom(k => ToOrderDTO.Map<ICollection<Order>, ICollection<OrderDTO>>(k.Orders)))
                 .ForMember(x => x.User, c => c.MapFrom(k => ToUserDTO.Map<User, UserDTO>(k.User)))
                 ).CreateMapper();
                 
@@ -129,7 +128,7 @@ namespace SkinShop.BLL.SkinShop.Mappers
             {
                 return new MapperConfiguration(cfg => cfg.CreateMap<Order, OrderDTO>()
                 .ForMember(x => x.Client, c => c.MapFrom(k => ToClientProfileDTO.Map<ClientProfile, ClientProfileDTO>(k.Client)))
-                .ForMember(x => x.Employee, c =>c.MapFrom(k => ToUserDTO.Map<User, UserDTO>(k.Employee)))
+                .ForMember(x => x.Employee, c => c.MapFrom(k => ToUserDTO.Map<User, UserDTO>(k.Employee)))
                 .ForMember(x => x.OrderCounts, c => c.MapFrom(k => ToOrderCountDTO.Map<ICollection<OrderCount>, List<OrderCountDTO>>(k.OrderCounts)))
                 )
                     .CreateMapper();
@@ -207,7 +206,6 @@ namespace SkinShop.BLL.SkinShop.Mappers
                 return new MapperConfiguration(cfg => cfg.CreateMap<ClientProfileDTO, ClientProfile>()
                 .ForMember(x => x.Basket, c => c.MapFrom(k => ToBasket.Map<BasketDTO, Basket>(k.Basket)))
                 .ForMember(x => x.Favorites, c => c.MapFrom(k => ToFavorites.Map<FavoritesDTO, Favorites>(k.Favorites)))
-                .ForMember(x => x.Orders, c => c.MapFrom(k => ToOrder.Map<ICollection<OrderDTO>, ICollection<Order>>(k.Orders)))
                 .ForMember(x => x.User, c => c.MapFrom(k => ToUser.Map<UserDTO, User>(k.User)))
                 ).CreateMapper();
 

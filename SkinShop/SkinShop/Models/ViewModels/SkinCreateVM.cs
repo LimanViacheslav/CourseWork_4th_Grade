@@ -34,7 +34,7 @@ namespace SkinShop.Models.ViewModels
         [Display(Name = "Игра")]
         [Required]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Недопустимая длина")]
-        public virtual string Game { get; set; }
+        public string Game { get; set; }
 
         [Display(Name = "Цена")]
         [Required]

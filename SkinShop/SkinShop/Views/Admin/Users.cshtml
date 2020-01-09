@@ -1,0 +1,32 @@
+﻿@model SkinShop.Models.ViewModels.UsersVM
+
+@{
+    ViewBag.Title = "Users";
+}
+<p>
+    <h2>Сотрудники</h2>
+</p>
+<table class="table">
+    <tr>
+        <th>Имя пользователя</th>
+        <th>Номер телефона</th>
+        <th>Электронная почта</th>
+        <th>Роль</th>
+    </tr>
+    @foreach(var i in Model.Users)
+    {
+        <tr>
+            <td>
+                @i.Name
+            </td>
+            <td>
+                @i.PhoneNumber
+            </td>
+            <td>@i.Email</td>
+            <td>@i.Role</td>
+        </tr>
+    }
+    <tr>
+        <th></th>
+    </tr>
+</table>

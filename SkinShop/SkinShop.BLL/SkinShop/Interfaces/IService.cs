@@ -21,5 +21,8 @@ namespace SkinShop.BLL.SkinShop.Interfaces
         BasketDTO GetBasket(string clientName = "");
         IEnumerable<OrderDTO> GetOrders(string clientName);
         ClientProfileDTO GetClientDTO(string clientName);
+        IEnumerable<OrderDTO> GetOrdersForEmployee();
+        ICollection<ClientProfileDTO> GetClients();
+        IEnumerable<UserDTO> GetUsers();
     }
 }

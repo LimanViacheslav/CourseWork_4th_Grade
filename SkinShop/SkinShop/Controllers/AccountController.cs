@@ -109,7 +109,7 @@ namespace SkinShop.Controllers
                 Name = "Liman Viacheslav Vitalievich",
                 Address = "ул. Спортивная, д.30, кв.75",
                 Role = "admin",
-            }, new List<string> { "user", "admin" });
+            }, new List<string> { "user", "admin", "manager" });
         }
     }
 }

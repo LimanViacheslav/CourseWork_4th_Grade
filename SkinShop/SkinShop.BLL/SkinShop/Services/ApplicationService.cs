@@ -189,6 +189,11 @@ namespace SkinShop.BLL.SkinShop.Services
             return _mappers.ToOrderDTO.Map<IEnumerable<Order>, IEnumerable<OrderDTO>>(Database.Orders.Find(x => x.ClientId == user.Id));
         }
 
+        public IEnumerable<OrderDTO> GetOrdersForEmployee()
+        {
+            return _mappers.ToOrderDTO.Map<IEnumerable<Order>, IEnumerable<OrderDTO>>(Database.Orders.Show());
+        }
+
         public OperationDetails AddToBasket(int skinid, string clientName = "")
         {
             if (clientName != "")
@@ -263,10 +268,24 @@ namespace SkinShop.BLL.SkinShop.Services
             return item;
         }
 
+        public IEnumerable<UserDTO> GetUsers()
+        {
+            IEnumerable<UserDTO> users = _mappers.ToUserDTO.Map<IEnumerable<User>, ICollection<UserDTO>>(Database.ClientManager.GetUsers());
+            users = from t in users
+                    where t.Role != "admin"
+                    select t;
+            return users;
+        }
+
         public ClientProfile GetClient(string clientName)
         {
             ClientProfile user = Database.ClientManager.FindClient(x => x.User.Email == clientName);
             return user;
+        }
+
+        public ICollection<ClientProfileDTO> GetClients()
+        {
+            return _mappers.ToClientProfileDTO.Map<IEnumerable<ClientProfile>, ICollection<ClientProfileDTO>>(Database.ClientManager.GetClients());
         }
 
         public ClientProfileDTO GetClientDTO(string clientName)

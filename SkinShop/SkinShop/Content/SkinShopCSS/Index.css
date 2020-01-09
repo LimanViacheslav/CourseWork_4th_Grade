@@ -78,3 +78,7 @@
 .customdrop option{
     background-color: dimgray;
 }
+
+.add {
+    float: right;
+}

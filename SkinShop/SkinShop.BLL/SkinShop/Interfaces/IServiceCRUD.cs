@@ -18,5 +18,7 @@ namespace SkinShop.BLL.SkinShop.Interfaces
         ICollection<GameDTO> GetGames();
         ICollection<SkinTypeDTO> GetTypes();
         ICollection<SkinRarityDTO> GetRarity();
+        OperationDetails CreateGame(GameDTO item);
+        OperationDetails UpdateGame(GameDTO item);
     }
 }

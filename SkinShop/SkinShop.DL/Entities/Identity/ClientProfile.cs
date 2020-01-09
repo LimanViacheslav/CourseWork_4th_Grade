@@ -15,9 +15,6 @@ namespace SkinShop.DL.Entities.Identity
         [ForeignKey("User")]
         public string Id { get; set; }
 
-        public string Name { get; set; }
-        public string Email { get; set; }
-
         //public virtual ICollection<Order> Orders { get; set; }
 
         public int? BasketId { get; set; }
@@ -27,5 +24,7 @@ namespace SkinShop.DL.Entities.Identity
         public virtual Favorites Favorites { get; set; }
 
         public virtual User User { get; set; }
+
+        public bool IsBanned { get; set; }
     }
 }

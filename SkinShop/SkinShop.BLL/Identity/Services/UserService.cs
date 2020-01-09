@@ -28,14 +28,14 @@ namespace SkinShop.BLL.Identity.Services
             User user = await Database.UserManager.FindByEmailAsync(userDto.Email);
             if (user == null)
             {
-                user = new User { Email = userDto.Email, UserName = userDto.Email, PhoneNumber = userDto.PhoneNumber };
+                user = new User { Email = userDto.Email, UserName = userDto.Email, PhoneNumber = userDto.PhoneNumber, Name = userDto.Name, Adres = userDto.Address };
                 var result = await Database.UserManager.CreateAsync(user, userDto.Password);
                 if (result.Errors.Count() > 0)
                     return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
                 // добавляем роль
                 await Database.UserManager.AddToRoleAsync(user.Id, userDto.Role);
                 // создаем профиль клиента
-                ClientProfile clientProfile = new ClientProfile { Id = user.Id, Name = userDto.Name, Email = userDto.Email};
+                ClientProfile clientProfile = new ClientProfile { Id = user.Id};
                 clientProfile.Basket = new Basket();
                 clientProfile.Favorites = new Favorites();
                 Database.ClientManager.Create(clientProfile);
@@ -45,6 +45,25 @@ namespace SkinShop.BLL.Identity.Services
             else
             {
                 return new OperationDetails(false, "Пользователь с таким логином уже существует", "Email");
+            }
+        }
+
+        public async Task<OperationDetails> CreateEmployee(UserDTO userDTO)
+        {
+            User user = await Database.UserManager.FindByEmailAsync(userDTO.Email);
+            if (user == null)
+            {
+                user = new User { Email = userDTO.Email, UserName = userDTO.Email, PhoneNumber = userDTO.PhoneNumber, Name = userDTO.Name, Adres = userDTO.Address };
+                var result = await Database.UserManager.CreateAsync(user, userDTO.Password);
+                if (result.Errors.Count() > 0)
+                    return new OperationDetails(false, result.Errors.FirstOrDefault(), "");
+                await Database.UserManager.AddToRoleAsync(user.Id, userDTO.Role);
+                Database.Save();
+                return new OperationDetails(true, "Регистрация успешно пройдена", "");
+            }
+            else
+            {
+                return new OperationDetails(false, "Менеджер с таким логином уже существует", "Email");
             }
         }
 
@@ -72,7 +91,7 @@ namespace SkinShop.BLL.Identity.Services
                     await Database.RoleManager.CreateAsync(role);
                 }
             }
-            await Create(adminDto);
+            await CreateEmployee(adminDto);
         }
 
         public void Dispose()

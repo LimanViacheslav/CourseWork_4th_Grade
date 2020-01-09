@@ -28,6 +28,8 @@
                     {
                         <div class="newprice">@Model.Skin.Price uah</div>
                     }
+                    @if (!User.IsInRole("admin"))
+                    {
                         <div class="buttons">
                             @if (!Model.IsSkinAlreadyInFavorites)
                             {
@@ -35,7 +37,7 @@
                                     <span class="glyphicon glyphicon-heart-empty"></span>
                                 </a>
                             }
-                            else if(!Model.IsSkinAlreadyInBasket)
+                            else if (!Model.IsSkinAlreadyInBasket)
                             {
                                 <span class="already">Скин уже в избранном</span>
                             }
@@ -50,6 +52,7 @@
                                 <span class="already">Скин уже в корзине</span>
                             }
                         </div>
+                    }
                 </div>
                 <div class="characteristics col-md-12">
                     <div style="color: @Model.Skin.SkinRarity.Color">

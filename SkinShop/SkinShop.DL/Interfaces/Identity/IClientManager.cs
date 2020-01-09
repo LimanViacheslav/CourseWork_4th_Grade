@@ -14,5 +14,7 @@ namespace SkinShop.DL.Interfaces.Identity
         ClientProfile GetClient(string id);
         ClientProfile FindClient(Func<ClientProfile, bool> predicate);
         User FindUser(Func<User, bool> predicate);
+        IEnumerable<ClientProfile> GetClients();
+        IEnumerable<User> GetUsers();
     }
 }

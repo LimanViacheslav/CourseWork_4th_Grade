@@ -60,7 +60,15 @@ namespace SkinShop.Controllers
         [HttpGet]
         public ActionResult Orders()
         {
-            IEnumerable<OrderDM> orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrders(User.Identity.Name));
+            IEnumerable<OrderDM> orders;
+            if (User.IsInRole("manager"))
+            {
+                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, List<OrderDM>>(_service.StoreService.GetOrdersForEmployee());
+            }
+            else
+            {
+                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrders(User.Identity.Name));
+            }
             return View(orders);
         }
         

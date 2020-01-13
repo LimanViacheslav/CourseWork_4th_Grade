@@ -1,86 +1,177 @@
-﻿@model ICollection<SkinShop.Models.SkinShop.SkinDM>
+﻿@model SkinShop.Models.ViewModels.SkinsVM
+@using SkinShop.Helpers
 @{
     ViewBag.Title = "Home Page";
 }
 
 @Styles.Render("~/Content/SkinShopCSS/Index.css")
 
+<div class="caption gradient-text">С к и н  ы</div>
 <div class="container">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-10 col-xs-offset-1 col-sm-offset-0">
-            @using (Html.BeginForm())
-            {
-                @Html.AntiForgeryToken()
-                <div class="form-horizontal customform">
-                    <div class="form-group">
-                        @Html.Label("Поиск", htmlAttributes: new { @class = "control-label col-md-2" })
-                        <div class="col-md-2">
-                            <input type="text" name="search" class="form-control"/>
-                        </div>
-                        <div class="col-md-3">
-                            @Html.DropDownList("Скины", new SelectList(new string[] { "All", "Ak-47", "M4", "Usp" }), new { @class = "form-control customdrop"})
-                        </div>
-                    </div>
-                </div>
-            }
-            @if(User.IsInRole("admin"))
+            @if (User.IsInRole("admin"))
             {
                 <a class="btn btn-info add" href="@Url.Action("CreateSkin", "Admin")">Добавить скин</a>
             }
         </div>
         <div class="col-md-2 col-xs-12">
-
+            @using (Ajax.BeginForm("SkinFilters", new AjaxOptions { UpdateTargetId = "result", LoadingElementId = "loading" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal customform">
+                    <div class="form-group">
+                        <input id="submit" type="submit" value="Применить" class="submit btn btn-success" />
+                        <input type="button" value="Очистить" class="clear btn btn-info" onclick="Reset()" />
+                        <div class="search">
+                            @Html.Label("Поиск", htmlAttributes: new { @class = "control-label" })
+                            <input type="text" name="searchbyname" class="form-control" onchange="Submit()" />
+                        </div>
+                        <div class="order">
+                            @Html.Label("Сортировка", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownList("order", new SelectList(new string[] { "По умолчанию", "По алфавиту А-Я", "По алфавиту Я-А", "По увеличению стоимости", "По уменьшению стоимости" }), new { @class = "form-control customdrop", onchange = "Submit()" })
+                        </div>
+                        <div class="filters">
+                            @if (Model.Games != null)
+                            {
+                                <div class="checkboxgroup">
+                                    <div class="tag">Игры</div>
+                                    @foreach (var i in Model.Games)
+                                    {
+                                    <div>
+                                        <label for="@i">
+                                            <input type="checkbox" value="@i" id="@i" name="games" class="checkbox checkbox-inline" onchange="Submit()" />
+                                            @i
+                                        </label>
+                                    </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Types != null)
+                            {
+                                <div class="checkboxgroup">
+                                    <div class="tag">Типы скинов</div>
+                                    @foreach (var i in Model.Types)
+                                    {
+                                    <div>
+                                        <label for="@i">
+                                            <input type="checkbox" value="@i" id="@i" name="types" class="checkbox checkbox-inline" onchange="Submit()" />
+                                            @i
+                                        </label>
+                                    </div>
+                                    }
+                                </div>
+                            }
+                            @if (Model.Rareties != null)
+                            {
+                                <div class="checkboxgroup">
+                                    <div class="tag">Редкость скинов</div>
+                                    @foreach (var i in Model.Rareties)
+                                    {
+                                        <div>
+                                            <label for="@i">
+                                                <input type="checkbox" value="@i" id="@i" name="rareties" class="checkbox checkbox-inline" onchange="Submit()" />
+                                                @i
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            <input type="number" id="page" name="page" />
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
         <div class="col-md-10 col-xs-12 col-xs-offset-1 col-sm-offset-0">
-            <div class="row">
+            <div id="result" class="row">
+                <div id="loading">
+                    <p>Идет загрузка...</p>
+                </div>
                 @if (Model != null)
                 {
-                    foreach (var i in Model)
+                    foreach (var i in Model.Skins)
                     {
-                    <div class="col-md-4 col-xs-10 col-sm-6 block">
-                        <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
-                            <div class="image">
-                                @if (i.Images.FirstOrDefault() != null)
-                                {
-                                    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
-                                }
-                                else
-                                {
-                                    <div>Lol</div>
-                                }
-                            </div>
-                            <div class="text">
-                                <div class="name">
-                                    @i.Name
+                        <div class="col-md-4 col-xs-10 col-sm-6 block">
+                            @if(User.IsInRole("admin"))
+                            {
+                                <div class="deleteskin">
+                                   @Ajax.ActionLink("Удалить", "DeleteSkin", "Admin", new {id = i.Id }, new AjaxOptions { LoadingElementId = "loading" }, new { @class = "btn btn-danger"})
                                 </div>
-                                <div class="price">
-                                    @if (i.Sale > 0)
+                            }
+                            <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
+                                <div class="image">
+                                    @if (i.Images.FirstOrDefault() != null)
                                     {
-                                        <div class="oldprice">@i.Price uah</div>
-                                        <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                                        <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
                                     }
                                     else
                                     {
-                                        <div class="newprice">@i.Price uah</div>
+                                        <div>Lol</div>
                                     }
                                 </div>
-                                <div class="characteristics">
-                                    <div class="gamename">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @i.Game.Name
+                                <div class="text">
+                                    <div class="name">
+                                        @i.Name
                                     </div>
-                                    <div class="type">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @i.SkinType.TypeName
+                                    <div class="price">
+                                        @if (i.Sale > 0)
+                                        {
+                                            <div class="oldprice">@i.Price uah</div>
+                                            <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                                        }
+                                        else
+                                        {
+                                            <div class="newprice">@i.Price uah</div>
+                                        }
                                     </div>
-                                    <div class="rarity" style="color: @i.SkinRarity.Color">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @i.SkinRarity.RarityName
+                                    <div class="characteristics">
+                                        <div class="gamename">
+                                            <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @i.Game.Name
+                                        </div>
+                                        <div class="type">
+                                            <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @i.SkinType.TypeName
+                                        </div>
+                                        <div class="rarity" style="color: @i.SkinRarity.Color">
+                                            <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @i.SkinRarity.RarityName
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
+                            </a>
+                        </div>
+                    }
+                }
+                <div class="btn-group custom">
+                    @for (int i = 1; i <= Model.PageInfo.TotalPages; i++)
+                    {
+                        if (i == Model.PageInfo.PageNumber)
+                        {
+                            <button id="@i" name="@i" value="@i" class="button btn btn-info active">@i</button>
+                        }
+                        else
+                        {
+                            <button id="@i" name="@i" value="@i" class="button btn btn-default">@i</button>
                         }
                     }
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function Reset() {
+        document.getElementById('form0').reset();
+        Submit();
+    }
+
+    function Submit() {
+        $('#page').val("1")
+        $('#submit').click();
+    }
+
+    $('.button').click(function (event) {
+        $('#page').val(event.target.value)
+        $('#submit').click();
+    })
+</script>

@@ -30,6 +30,13 @@ namespace SkinShop.BLL.SkinShop.Services
                 return new OperationDetails(false, "ОбЪект ссылается на null", this.ToString());
             }
             Game game = _mappers.ToGame.Map<GameDTO, Game>(item);
+            ICollection<Game> games = (from t in Database.Games.Show()
+                                      where t.Name == game.Name
+                                      select t).ToList();
+            if(games.FirstOrDefault() == null)
+            {
+                return UpdateGame(item);
+            }
             if(game == null)
             {
                 return new OperationDetails(false, "Не удалось преобразовать объект", this.ToString());
@@ -96,39 +103,49 @@ namespace SkinShop.BLL.SkinShop.Services
             {
                 return new OperationDetails(false, "Не удалось преобразовать объект", this.ToString());
             }
-            Game _game = Database.Games.Find(x => x.Name == item.Game.Name)?.FirstOrDefault();
-            if (_game == null)
+            ICollection<Skin> skins = (from t in Database.Skins.Show()
+                                      where t.Name == _skin.Name
+                                      select t).ToList();
+            if (skins.FirstOrDefault() == null)
             {
-                return new OperationDetails(false, "Не удалось найти игру с таким названием", this.ToString());
+                return UpdateSkin(item);
             }
-            _skin.Game = _game;
-            SkinRarity _skinRarity = Database.SkinRareties.Find(x => x.RarityName == item.SkinRarity.RarityName)?.FirstOrDefault();
-            if(_skinRarity == null)
+            else
             {
-                _skinRarity = new SkinRarity {RarityName = item.SkinRarity.RarityName};
-            }
-            _skin.SkinRarity = _skinRarity;
-            SkinType _skinType = Database.SkinTypes.Find(x => x.TypeName == item.SkinType.TypeName)?.FirstOrDefault();
-            if (_skinType == null)
-            {
-                _skinType = new SkinType { TypeName = item.SkinType.TypeName };
-            }
-            foreach(var i in item.Images)
-            {
-                if(i != null)
+                Game _game = Database.Games.Find(x => x.Name == item.Game.Name)?.FirstOrDefault();
+                if (_game == null)
                 {
-                    Image image = Database.Images.Find(x => x.Photo == i.Photo)?.FirstOrDefault();
-                    if(image == null)
-                    {
-                        image = new Image() { Photo = i.Photo, Text = i.Text };
-                    }
-                    _skin.Images.Add(image);
+                    return new OperationDetails(false, "Не удалось найти игру с таким названием", this.ToString());
                 }
+                _skin.Game = _game;
+                SkinRarity _skinRarity = Database.SkinRareties.Find(x => x.RarityName == item.SkinRarity.RarityName)?.FirstOrDefault();
+                if (_skinRarity == null)
+                {
+                    _skinRarity = new SkinRarity { RarityName = item.SkinRarity.RarityName };
+                }
+                _skin.SkinRarity = _skinRarity;
+                SkinType _skinType = Database.SkinTypes.Find(x => x.TypeName == item.SkinType.TypeName)?.FirstOrDefault();
+                if (_skinType == null)
+                {
+                    _skinType = new SkinType { TypeName = item.SkinType.TypeName };
+                }
+                foreach (var i in item.Images)
+                {
+                    if (i != null)
+                    {
+                        Image image = Database.Images.Find(x => x.Photo == i.Photo)?.FirstOrDefault();
+                        if (image == null)
+                        {
+                            image = new Image() { Photo = i.Photo, Text = i.Text };
+                        }
+                        _skin.Images.Add(image);
+                    }
+                }
+                _skin.SkinType = _skinType;
+                Database.Skins.Add(_skin);
+                Database.Save();
+                return new OperationDetails(true, "Скин успешно создан", this.ToString());
             }
-            _skin.SkinType = _skinType;
-            Database.Skins.Add(_skin);
-            Database.Save();
-            return new OperationDetails(true, "Скин успешно создан", this.ToString());
         }
 
         public OperationDetails UpdateSkin(SkinDTO item)
@@ -205,6 +222,13 @@ namespace SkinShop.BLL.SkinShop.Services
         public ICollection<GameDTO> GetGames()
         {
             return _mappers.ToGameDTO.Map<ICollection<Game>, ICollection<GameDTO>>(Database.Games.Show());
+        }
+
+        public GameDTO GetGame(int? id)
+        {
+            if (id != null)
+                return _mappers.ToGameDTO.Map<Game, GameDTO>(Database.Games.Get(Convert.ToInt32(id)));
+            return null;
         }
 
         public ICollection<SkinTypeDTO> GetTypes()

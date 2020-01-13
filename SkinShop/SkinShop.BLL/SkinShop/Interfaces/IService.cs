@@ -17,6 +17,7 @@ namespace SkinShop.BLL.SkinShop.Interfaces
         OperationDetails AddToBasket(int skinId, string clientName = "");
         OperationDetails DeleteFromBasket(int skinId ,string clientName = "");
         OperationDetails ConfirmOrder(int? orderId, string employeeName);
+        OperationDetails Reject(int? orderId, string employeeName);
         FavoritesDTO GetFavorites(string clientName = "");
         BasketDTO GetBasket(string clientName = "");
         IEnumerable<OrderDTO> GetOrders(string clientName);
@@ -24,5 +25,6 @@ namespace SkinShop.BLL.SkinShop.Interfaces
         IEnumerable<OrderDTO> GetOrdersForEmployee();
         ICollection<ClientProfileDTO> GetClients();
         IEnumerable<UserDTO> GetUsers();
+        UserDTO GetUserByName(string userName);
     }
 }

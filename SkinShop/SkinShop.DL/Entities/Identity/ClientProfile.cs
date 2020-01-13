@@ -24,7 +24,5 @@ namespace SkinShop.DL.Entities.Identity
         public virtual Favorites Favorites { get; set; }
 
         public virtual User User { get; set; }
-
-        public bool IsBanned { get; set; }
     }
 }

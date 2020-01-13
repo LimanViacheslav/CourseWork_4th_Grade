@@ -36,15 +36,15 @@ namespace SkinShop.BLL.SkinShop.Services
                 skins.Add(_mappers.ToSkinDTO.Map<Skin, SkinDTO>(Database.Skins.Get(i)));
             }
 
-            foreach(var i in skins)
+            for(int i=0;i<skins.Count;i++)
             {
-                if(i.Sale>0)
+                if(skins[i].Sale>0)
                 {
-                    _price += Discount.GetDiscountedPrice(i.Price, i.Sale);
+                    _price += Discount.GetDiscountedPrice(skins[i].Price, skins[i].Sale) * counts[i];
                 }
                 else
                 {
-                    _price += i.Price;
+                    _price += skins[i].Price * counts[i];
                 }
             }
 
@@ -82,17 +82,45 @@ namespace SkinShop.BLL.SkinShop.Services
             {
                 Order _order = Database.Orders.Get(Convert.ToInt32(orderId));
 
-                if(employeeName != null)
+                if(employeeName != null && _order.Employee==null)
                 {
                     User _employee = GetUser(employeeName);
                     _order.Employee = _employee;
                     _order.EmployeeId = _employee.Id;
-                    _order.Status = OrderStatus.Confirmed;
                 }
                 else
                 {
                     return new OperationDetails(false, "Не удалось найти сотрудника", this.ToString());
                 }
+                _order.Status = OrderStatus.Confirmed;
+                Database.Orders.Update(_order);
+                Database.Save();
+                return new OperationDetails(true, "Заказ успешно подтверждён", this.ToString());
+            }
+            else
+            {
+                return new OperationDetails(false, "Не удалось найти заказ", this.ToString());
+            }
+        }
+
+        
+        public OperationDetails Reject(int? orderId, string employeeName)
+        {
+            if (orderId != null)
+            {
+                Order _order = Database.Orders.Get(Convert.ToInt32(orderId));
+
+                if (employeeName != null && _order.Employee == null)
+                {
+                    User _employee = GetUser(employeeName);
+                    _order.Employee = _employee;
+                    _order.EmployeeId = _employee.Id;
+                }
+                else
+                {
+                    return new OperationDetails(false, "Не удалось найти сотрудника", this.ToString());
+                }
+                _order.Status = OrderStatus.Rejected;
                 Database.Orders.Update(_order);
                 Database.Save();
                 return new OperationDetails(true, "Заказ успешно подтверждён", this.ToString());
@@ -271,10 +299,28 @@ namespace SkinShop.BLL.SkinShop.Services
         public IEnumerable<UserDTO> GetUsers()
         {
             IEnumerable<UserDTO> users = _mappers.ToUserDTO.Map<IEnumerable<User>, ICollection<UserDTO>>(Database.ClientManager.GetUsers());
+            foreach(var i in users)
+            {
+                Task<IList<string>> roles =  Database.UserManager.GetRolesAsync(i.Id);
+                i.Role = roles.Result.FirstOrDefault();
+            }
             users = from t in users
                     where t.Role != "admin"
                     select t;
             return users;
+        }
+
+        public UserDTO GetUserByName(string userName)
+        {
+            Database.Save();
+            User item = Database.ClientManager.FindUser(x => x.Email == userName);
+            UserDTO user = _mappers.ToUserDTO.Map<User, UserDTO>(item);
+            if(item != null)
+            {
+                Task<IList<string>> roles = Database.UserManager.GetRolesAsync(item.Id);
+                user.Role = roles.Result.FirstOrDefault();
+            }
+            return user;
         }
 
         public ClientProfile GetClient(string clientName)

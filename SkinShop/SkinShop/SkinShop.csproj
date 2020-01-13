@@ -162,9 +162,12 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\BanAttribute.cs" />
+    <Compile Include="Filters\BanUserAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\PagingHelper.cs" />
     <Compile Include="Mappers\MappersForDM.cs" />
     <Compile Include="Models\Account\ClientProfileDM.cs" />
     <Compile Include="Models\Account\LoginModel.cs" />
@@ -176,13 +179,16 @@
     <Compile Include="Models\SkinShop\ImageDM.cs" />
     <Compile Include="Models\SkinShop\OrderCountDM.cs" />
     <Compile Include="Models\SkinShop\OrderDM.cs" />
+    <Compile Include="Models\SkinShop\PageInfo.cs" />
     <Compile Include="Models\SkinShop\SkinDM.cs" />
     <Compile Include="Models\SkinShop\SkinRaretyDM.cs" />
     <Compile Include="Models\SkinShop\SkinTypeDM.cs" />
     <Compile Include="Models\ViewModels\GameCreateVM.cs" />
+    <Compile Include="Models\ViewModels\GameDetailsVM.cs" />
+    <Compile Include="Models\ViewModels\OrdersVM.cs" />
     <Compile Include="Models\ViewModels\SkinCreateVM.cs" />
     <Compile Include="Models\ViewModels\SkinDetailsView.cs" />
-    <Compile Include="Models\ViewModels\UsersVM.cs" />
+    <Compile Include="Models\ViewModels\SkinsVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -190,15 +196,40 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\ak47logo.png" />
+    <Content Include="Content\Images\auglogo.png" />
+    <Content Include="Content\Images\awplogo.png" />
     <Content Include="Content\Images\background.jpg" />
+    <Content Include="Content\Images\csgoknifes.jpg" />
+    <Content Include="Content\Images\csgologo.jpg" />
+    <Content Include="Content\Images\dota2Logo.jpeg" />
+    <Content Include="Content\Images\fortniteLogo.jpg" />
+    <Content Include="Content\Images\hotslogo.jpg" />
+    <Content Include="Content\Images\knifelogo.png" />
+    <Content Include="Content\Images\knifes.jpg" />
+    <Content Include="Content\Images\m4logo.png" />
+    <Content Include="Content\Images\new_smm_5_rus.jpg" />
+    <Content Include="Content\Images\overwatchLogo.jpg" />
     <Content Include="Content\Images\PageNotFound.jpg" />
+    <Content Include="Content\Images\pubglogo.jpg" />
+    <Content Include="Content\Images\usplogo.png" />
     <Content Include="Content\SkinShopCSS\Basket.css" />
     <Content Include="Content\SkinShopCSS\Favorites.css" />
+    <Content Include="Content\SkinShopCSS\GameDetails.css" />
     <Content Include="Content\SkinShopCSS\Index.css" />
     <Content Include="Content\SkinShopCSS\Layout.css" />
+    <Content Include="Content\SkinShopCSS\Login.css" />
+    <Content Include="Content\SkinShopCSS\Main.css" />
     <Content Include="Content\SkinShopCSS\Orders.css" />
     <Content Include="Content\SkinShopCSS\PageNotFound.css" />
+    <Content Include="Content\SkinShopCSS\Register.css" />
     <Content Include="Content\SkinShopCSS\SkinDetails.css" />
+    <Content Include="Content\SkinShopCSS\SuccessRegister.css" />
+    <Content Include="Content\SkinShopCSS\UserInfo.css" />
+    <Content Include="Content\SkinShopCSS\Users.css" />
+    <Content Include="Content\ScriptsSkinShop\fm.revealator.jquery.css" />
+    <Content Include="Content\ScriptsSkinShop\fm.revealator.jquery.js" />
+    <Content Include="Content\ScriptsSkinShop\jquery-1.11.3.min.js" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -211,6 +242,8 @@
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -241,6 +274,13 @@
     <Content Include="Views\Client\Orders.cshtml" />
     <Content Include="Views\Admin\CreateGame.cshtml" />
     <Content Include="Views\Admin\Users.cshtml" />
+    <Content Include="Views\Account\UserInfo.cshtml" />
+    <Content Include="Views\Home\SkinFilters.cshtml" />
+    <Content Include="Views\Home\Main.cshtml" />
+    <Content Include="Views\Home\GameDetails.cshtml" />
+    <Content Include="Views\Client\OrderFilters.cshtml" />
+    <Content Include="Views\Account\SuccessRegister.cshtml" />
+    <Content Include="Views\Admin\UserFilters.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

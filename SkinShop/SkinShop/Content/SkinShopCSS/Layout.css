@@ -6,8 +6,9 @@
     font-style: normal;
 }
 .main {
-    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Oswald';
     background-image: url("../Images/background.jpg");
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -15,6 +16,8 @@
 
 footer {
     color: gray;
+    border-top: 2px solid lightgray;
+    padding-top: 10px;
 }
 
 .nav {
@@ -28,4 +31,8 @@ footer {
 
 a:active {
     background-color: red;
+}
+
+.container li, .navbar-brand {
+    font-size: 20px !important;
 }

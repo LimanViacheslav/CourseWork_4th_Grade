@@ -18,6 +18,8 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
+using System.Web.SessionState;
+using System.Linq;
 
 namespace SkinShop.Controllers
 {
@@ -43,16 +45,30 @@ namespace SkinShop.Controllers
             }
         }
 
+        //[HttpGet]
+        //public ActionResult CreateSkin(SkinCreateVM item = null, int id = 0)
+        //{
+        //    SkinDM result = _mappers.ToSkinDM.Map<SkinDTO, SkinDM>(_service.ServiceForCRUD.GetSkin(id));
+        //    SkinCreateVM skin = new SkinCreateVM()
+        //    {
+        //        Alt = result.Images[0].Text,
+        //        Image = Convert.ToByte(result.Images[0].Photo),
+
+        //    };
+        //}
+
+        [HttpGet]
         public ActionResult CreateSkin()
         {
             List<GameDM> games = _mappers.ToGameDM.Map<ICollection<GameDTO>, List<GameDM>>(_service.ServiceForCRUD.GetGames());
-            SelectList gameNames = new SelectList(games, "Name", "Name");
-            ViewData["GameNames"] = gameNames;
+            var items = games.Select(x => new SelectListItem() { Text = x.Name, Value = x.Name }).ToList();
+            
+            ViewBag.Game = items;
             return View();
         }
 
         [HttpPost]
-        public ActionResult CreateSkin([Bind(Include = "Game")] SkinCreateVM item)
+        public ActionResult CreateSkin(SkinCreateVM item)
         {
             if (ModelState.IsValid)
             {
@@ -154,20 +170,87 @@ namespace SkinShop.Controllers
                 if (result.Succedeed)
                 {
                     ViewBag.Result = result.Message;
-                    return View();
+                    return RedirectToAction("Register", "Account");
                 }
                 else
                     ModelState.AddModelError(result.Property, result.Message);
             }
-            return View(model);
+            return RedirectToAction("Register", "Account");
         }
 
         public ActionResult Users()
         {
             List<UserDM> users = _mappers.ToUserDM.Map<IEnumerable<UserDTO>, List<UserDM>>(_service.StoreService.GetUsers());
-            List<ClientProfileDM> clients = _mappers.ToClientProfileDM.Map<IEnumerable<ClientProfileDTO>, List<ClientProfileDM>>(_service.StoreService.GetClients());
-            UsersVM usersModel = new UsersVM() { Clients = clients, Users = users };
-            return View(usersModel);
+            return View(users);
+        }
+
+        public ActionResult UserFilters(string userName = "", string[] roles = null)
+        {
+            List<UserDM> result = _mappers.ToUserDM.Map<IEnumerable<UserDTO>, List<UserDM>>(_service.StoreService.GetUsers());
+
+            if(userName != "")
+            {
+                result = (from t in result
+                         where t.Name.Contains(userName) || t.Email.Contains(userName)
+                         select t).ToList();
+            }
+            
+            if(roles != null)
+            {
+                List<UserDM> _users = new List<UserDM>();
+                foreach(var i in roles)
+                {
+                    List<UserDM> localUsers = (from t in result
+                                              where t.Role == i
+                                              select t).ToList();
+                    _users.AddRange(localUsers);
+                }
+                result = _users;
+            }
+
+            return PartialView(result);
+        }
+
+        public ActionResult Ban(string id)
+        {
+            if (id == "")
+                return RedirectToAction("PageNotFound", "Home");
+            UserService.Ban(id);
+            return RedirectToAction("Users");
+        }
+
+        public ActionResult Unban(string id)
+        {
+            if (id == "")
+                return RedirectToAction("PageNotFound", "Home");
+            UserService.Unban(id);
+            return RedirectToAction("Users");
+        }
+
+        public ActionResult DeleteSkin(int? id)
+        {
+            if(id != null)
+            {
+                OperationDetails result = _service.CommonOperations.SoftDelete(Tables.Skins, Convert.ToInt32(id));
+                if (result.Succedeed)
+                {
+                    return RedirectToAction("SkinFilters", "Home");
+                }
+            }
+            return RedirectToAction("PageNotFound", "Home");
+        }
+
+        public ActionResult DeleteGame(int? id)
+        {
+            if (id != null)
+            {
+                OperationDetails result = _service.CommonOperations.SoftDelete(Tables.Games, Convert.ToInt32(id));
+                if (result.Succedeed)
+                {
+                    return RedirectToAction("SkinFilters", "Home");
+                }
+            }
+            return RedirectToAction("PageNotFound", "Home");
         }
     }
 }

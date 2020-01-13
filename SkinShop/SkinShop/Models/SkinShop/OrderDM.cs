@@ -8,22 +8,24 @@ namespace SkinShop.Models.SkinShop
 {
     public enum OrderStatusDM
     {
-        NotConfirmed = 1,
-        Confirmed,
+        Confirmed = 1,
+        NotConfirmed,
         InProcessing,
         Rejected,
-        Completed
+        Completed,
+        Null
     }
 
     public class OrderDM
     {
         public int Id { get; set; }
 
+        public string ClientId { get; set; }
         public virtual ClientProfileDM Client { get; set; }
 
         public virtual ICollection<OrderCountDM> OrderCounts { get; set; }
 
-        public int EmployeeId { get; set; }
+        public string EmployeeId { get; set; }
         public virtual UserDM Employee { get; set; }
 
         public DateTime OrderTime { get; set; }

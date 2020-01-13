@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using SkinShop.BLL.Identity.IdentityDTO;
 using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.Identity.Interfaces;
@@ -92,6 +93,24 @@ namespace SkinShop.BLL.Identity.Services
                 }
             }
             await CreateEmployee(adminDto);
+        }
+
+        public OperationDetails Ban(string id)
+        {
+            User user = Database.ClientManager.GetUser(id);
+            user.IsBanned = true;
+            Database.UserManager.Update(user);
+            Database.Save();
+            return new OperationDetails(true, "Пользователь успешно забанен", this.ToString());
+        }
+
+        public OperationDetails Unban(string id)
+        {
+            User user = Database.ClientManager.GetUser(id);
+            user.IsBanned = false;
+            Database.UserManager.Update(user);
+            Database.Save();
+            return new OperationDetails(true, "Пользователь успешно разабанен", this.ToString());
         }
 
         public void Dispose()

@@ -6,13 +6,13 @@
 
 @Styles.Render("~/Content/SkinShopCSS/Favorites.css")
 
-<h2>Избранное</h2>
+<div class="caption gradient-text">И з б р а н н о е</div>
 
 <div class="container-fluid">
     @foreach (var i in Model.FavoritesSkins)
     {
         <div class="commonblock row">
-            <div class="block col-md-8 col-md-offset-1">
+            <div class="blockhere col-md-8 col-md-offset-1">
                 <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
                     <div class="image">
                         @if (i.Images.FirstOrDefault() != null)
@@ -39,7 +39,7 @@
                 </a>
             </div>
             <div class="deletebutton col-md-2 col-md-offset-1">
-                <a href="@Url.Action("DeleteFromFavorite", "Client", new { skinid = i.Id })" class="form-control">Удалить</a>
+                <a href="@Url.Action("DeleteFromFavorite", "Client", new { skinid = i.Id })" class="form-control btn btn-danger">Удалить</a>
             </div>
         </div>
     }

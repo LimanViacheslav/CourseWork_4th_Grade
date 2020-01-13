@@ -1,82 +1,173 @@
-﻿@model IEnumerable<SkinShop.Models.SkinShop.OrderDM>
-
-@{
-    ViewBag.Title = "Orders";
-}
+﻿@model SkinShop.Models.ViewModels.OrdersVM
+@using SkinShop.Models.SkinShop
 
 @Styles.Render("~/Content/SkinShopCSS/Orders.css")
 
-<h2>Заказы</h2>
+<div  class="caption gradient-text">З а к а з ы</div>
 
 <div class="container">
     <div class="row">
-        @foreach (var i in Model)
-        {
-        <div class="mainblock col-md-10 col-md-offset-1">
-            <div class="client col-md-12">
-                <a href="@Url.Action("Profile", "Account", new { id = i.Id })">
-                    <div class="clientname">Клиент: @i.Client.Name</div>
-                    <div class="clientphonenumber">Номер телефона: @i.Client.User.PhoneNumber</div>
-                </a>
-            </div>
-            <div class="skins col-md-10 col-md-offset-1">
-                @foreach (var j in i.OrderCounts)
-                {
-                    <div class="linkblock">
-                        <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="linkskin">
-                            <div class="image">
-                                @if (j.Skin.Images.FirstOrDefault() != null)
-                                {
-                                    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(j.Skin.Images.FirstOrDefault().Photo))" alt="@j.Skin.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
-                                }
-                                else
-                                {
-                                    <div>Lol</div>
-                                }
-                            </div>
-                            <div class="textskin">
-                                <div class="nameskin">
-                                    @j.Skin.Name
-                                </div>
-                                <div class="price">
-                                    @if (j.Skin.Sale > 0)
-                                    {
-                                        <div class="oldprice">@j.Skin.Price uah</div>
-                                        <div class="newprice">@(j.Skin.Price - ((j.Skin.Price * j.Skin.Sale) / 100)) uah</div>
-                                    }
-                                    else
-                                    {
-                                        <div class="newprice">@j.Skin.Price uah</div>
-                                    }
-                                </div>
-                                <div class="characteristics">
-                                    <div class="gamename">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @j.Skin.Game.Name
-                                    </div>
-                                    <div class="type">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @j.Skin.SkinType.TypeName
-                                    </div>
-                                    <div class="rarity" style="color: @j.Skin.SkinRarity.Color">
-                                        <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @j.Skin.SkinRarity.RarityName
+        <div class="col-md-10 col-md-offset-1 filters">
+            @using (Ajax.BeginForm("OrderFilters", new AjaxOptions { UpdateTargetId = "result", LoadingElementId = "loading" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal customform">
+                    <div class="form-group">
+                        <input id="submit" type="submit" value="Применить" class="submit btn btn-success" />
+                        <input type="button" value="Очистить" class="clear btn btn-info" onclick="Reset()" />
+                        <div class="search">
+                            @Html.Label("Поиск", htmlAttributes: new { @class = "control-label" })
+                            <input type="text" name="userName" class="form-control" onchange="Submit()" />
+                        </div>
+                        <div class="order">
+                            @Html.Label("Сортировка", htmlAttributes: new { @class = "control-label" })
+                            @Html.DropDownList("order", new SelectList(new string[] { "По умолчанию", "По алфавиту А-Я (клиент)", "По алфавиту Я-А (клиент)", "По увеличению стоимости", "По уменьшению стоимости", "По увеличению даты", "По убыванию даты" }), new { @class = "form-control customdrop", onchange = "Submit()" })
+                        </div>
+                        <div class="filters">
+                            @if (Model.MinPrice != -1 && Model.MaxPrice != -1)
+                            {
+                                <div class="pricegroup">
+                                    <div class="tag">Стоимость</div>
+                                    <div>
+                                        <div class="input">От: <div class="uah"> uah</div><input name="minPrice" type="number" value="@Model.MinPrice" min="@Model.MinPrice" id="minprice" class="form-control" /></div>
+                                        <div class="input">До: <div class="uah"> uah</div><input name="maxPrice" type="number" value="@Model.MaxPrice" max="@Model.MaxPrice" id="maxprice" class="form-control" /></div>
                                     </div>
                                 </div>
+                            }
+                            <div class="statusgroup">
+                                <div class="tag">Статус</div>
+                                <label for="@OrderStatusDM.Confirmed"><input name="status" type="checkbox" value="@OrderStatusDM.Confirmed" id="@OrderStatusDM.Confirmed" onchange="Submit()" />@OrderStatusDM.Confirmed</label>
+                                <label for="@OrderStatusDM.Rejected"><input name="status" type="checkbox" value="@OrderStatusDM.Rejected" id="@OrderStatusDM.Rejected" onchange="Submit()" />@OrderStatusDM.Rejected</label>
+                                <label for="@OrderStatusDM.NotConfirmed"><input name="status" type="checkbox" value="@OrderStatusDM.NotConfirmed" id="@OrderStatusDM.NotConfirmed" onchange="Submit()" />@OrderStatusDM.NotConfirmed</label>
                             </div>
-                            <div class="count">
-                                Количество: @j.Count
-                            </div>
-                        </a>
+                        </div>
                     </div>
-                }
-            </div>
-            <div class="col-md-12">
-                <div class="allprice">
-                    Общая стоимость: <span class="newprice">@i.Price uah</span>
                 </div>
-                <div class="status">
-                Статус: <span class="text-info">@i.Status</span>                
-                </div>
+            }
+            <div id="loading">
+                <p>Идет загрузка...</p>
             </div>
         </div>
-        }
+        <div id="result">
+            @foreach (var i in Model.Orders)
+            {
+                <div class="mainblock col-md-10 col-md-offset-1">
+                    @if (i.Client != null)
+                    {
+                        <div class="client col-md-12">
+                            <a href="@Url.Action("UserInfo", "Account", new { name = i.Client.User.Email })">
+                                <div class="clientname">Клиент: @i.Client.User.Name</div>
+                                <div class="clientphonenumber">Номер телефона: @i.Client.User.PhoneNumber</div>
+                            </a>
+                        </div>
+                    }
+                    <div class="skins col-md-10 col-md-offset-1">
+                        @foreach (var j in i.OrderCounts)
+                        {
+                            <div class="linkblock">
+                                <a href="@Url.Action("SkinDetails", "Home", new { id = j.Skin.Id })" class="linkskin">
+                                    <div class="image">
+                                        @if (j.Skin.Images.FirstOrDefault() != null)
+                                        {
+                                            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(j.Skin.Images.FirstOrDefault().Photo))" alt="@j.Skin.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                                        }
+                                    </div>
+                                    <div class="textskin">
+                                        <div class="nameskin">
+                                            @j.Skin.Name
+                                        </div>
+                                        <div class="price">
+                                            @if (j.Skin.Sale > 0)
+                                            {
+                                                <div class="oldprice">@j.Skin.Price uah</div>
+                                                <div class="newprice">@(j.Skin.Price - ((j.Skin.Price * j.Skin.Sale) / 100)) uah</div>
+                                            }
+                                            else
+                                            {
+                                                <div class="newprice">@j.Skin.Price uah</div>
+                                            }
+                                        </div>
+                                        <div class="characteristics">
+                                            <div class="gamename">
+                                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @j.Skin.Game.Name
+                                            </div>
+                                            <div class="type">
+                                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @j.Skin.SkinType.TypeName
+                                            </div>
+                                            <div class="rarity" style="color: @j.Skin.SkinRarity.Color">
+                                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @j.Skin.SkinRarity.RarityName
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="count">
+                                        Количество: @j.Count
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-12 downblock">
+                        <div class="allprice">
+                            Общая стоимость: <span class="newprice">@i.Price uah</span>
+                        </div>
+                        <div class="dateblock">
+                            Дата оформления заказа: <span class="date">@i.OrderTime.ToShortDateString()</span>
+                        </div>
+                        <div class="status">
+                            Статус: <span class="text-info">@i.Status</span>
+                            <div class="buttons">
+                                @if (User.IsInRole("manager"))
+                                {
+                                    <div class="employeeblock">
+                                        @if (i.Status == SkinShop.Models.SkinShop.OrderStatusDM.NotConfirmed)
+                                        {
+                                            <div class="confirm">
+                                                <a class="btn btn-success form-control" href="@Url.Action("ConfirmOrder", "Client", new { id = i.Id})">Подтвердить</a>
+                                            </div>
+                                            <div class="reject">
+                                                <a class="btn btn-danger form-control" href="@Url.Action("Reject", "Client", new { id = i.Id})">Отклонить</a>
+                                            </div>
+                                        }
+                                        @if (i.Status == SkinShop.Models.SkinShop.OrderStatusDM.Rejected)
+                                        {
+                                            <div class="confirm">
+                                                <a class="btn btn-success form-control" href="@Url.Action("ConfirmOrder", "Client", new { id = i.Id})">Подтвердить</a>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function Reset() {
+        document.getElementById('form0').reset();
+        Submit();
+    }
+
+    function Submit() {
+        $('#submit').click();
+    }
+
+    $('#minprice').change(function (event) {
+        let max = $('#maxprice').val();
+        if (event.target.value > max) {
+            $('#minprice').val(max);
+        }
+        Submit();
+    });
+
+    $('#maxprice').change(function (event) {
+        let min = $('#minprice').val();
+        if (event.target.value < min) {
+            $('#maxprice').val(min);
+        }
+        Submit();
+    });
+</script>

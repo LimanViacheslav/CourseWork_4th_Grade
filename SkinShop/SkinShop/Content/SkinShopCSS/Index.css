@@ -81,4 +81,102 @@
 
 .add {
     float: right;
+    margin-top: 2%;
+}
+
+.submit {
+    float: left;
+    clear: both;
+    display: none;
+}
+
+.form-group {
+    font-size: 17px;
+}
+
+.form-control {
+    font-size: 17px;
+    padding-left: 10px;
+    padding-top: 0;
+}
+
+.btn {
+    font-size: 17px;
+}
+
+.search {
+    text-align: left;
+    margin-top: 40px;
+    width: 80%
+}
+
+.order {
+    text-align: left;
+    width: 80%
+}
+
+.checkboxgroup {
+    text-align: left;
+    margin-right: 10px;
+    margin-top: 20px;
+    float: left;
+    padding: 5px;
+    float: left;
+}
+
+.tag {
+    font-size: 18px;    
+}
+
+form:hover {
+    border-right: 1px solid white;
+}
+
+.clear {
+    float: left;
+}
+
+.caption {
+    font-size: 40px;
+    text-align: center;
+    color: lightgray;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    padding: 20px;
+    margin: 2%;
+    width: 100%;
+}
+
+.gradient-text {
+    font-size: 40px;
+    text-transform: uppercase;
+    background: linear-gradient(45deg, red 33%, #0D61BC 66%, #8AA9D6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #0B2349;
+    display: table;
+    margin: 20px auto;
+    font-weight: bold;
+}
+
+#page {
+    display: none;
+}
+
+.custom {
+    margin: 3% 2%;
+    width: 100%
+}
+
+#loading {
+    display: none;
+    font-size: 30px;
+    text-align: center;
+    color: greenyellow;
+}
+
+.deleteskin {
+    float: right;
+    font-size: 14px;
+    padding: 5px;
 }

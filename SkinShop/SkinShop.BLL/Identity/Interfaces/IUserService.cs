@@ -15,5 +15,7 @@ namespace SkinShop.BLL.Identity.Interfaces
         Task<ClaimsIdentity> Authenticate(UserDTO userDto);
         Task SetInitialData(UserDTO adminDto, List<string> roles);
         Task<OperationDetails> CreateEmployee(UserDTO userDTO);
+        OperationDetails Unban(string id);
+        OperationDetails Ban(string id);
     }
 }

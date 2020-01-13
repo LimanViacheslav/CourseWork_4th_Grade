@@ -48,10 +48,6 @@
     color: lightgray;
 }
 
-.gamename {
-    font-size: 18px;
-}
-
 .item {
     color: gray !important;
 }
@@ -73,4 +69,66 @@
     padding: 2%;
     font-size: 18px;
     margin: 1%;
+}
+
+.hide {
+    display: none;
+}
+
+.image {
+    min-height: 7em;
+    max-height: 10em;
+}
+
+.caption {
+    font-size: 40px;
+    text-align: center;
+    color: lightgray;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    padding: 20px;
+    margin: 2%;
+    width: 100%;
+}
+
+.gradient-text {
+    font-family: 'Bauhaus 93';
+    text-transform: uppercase;
+    background: linear-gradient(45deg, red 33%, #0D61BC 66%, #8AA9D6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #0B2349;
+    display: table;
+    margin: 20px auto;
+}
+
+.gamename {
+    text-align: center;
+    font-size: 22px;
+    padding: 10px;
+    width: 100%;
+    float: left;
+}
+
+.gamelink {
+    color: lightgray !important;
+    text-decoration: none !important;
+}
+
+.gamelink:hover {
+    color: mediumpurple !important;
+    transition: .3s;
+    font-size: 24px;
+}
+
+.gamecaption {
+    float: left;
+    font-size: 22px;
+    text-align: left;
+    color: lightgray;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+    padding: 20px;
+    margin: 2%;
+    width: 100%;
 }

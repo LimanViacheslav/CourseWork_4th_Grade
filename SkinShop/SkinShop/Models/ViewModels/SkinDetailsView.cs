@@ -14,5 +14,7 @@ namespace SkinShop.Models.ViewModels
         public bool IsSkinAlreadyInBasket { get; set; }
 
         public bool IsSkinAlreadyInFavorites { get; set; }
+
+        public List<SkinDM> OtherSkins { get; set; }
     }
 }

@@ -1,0 +1,81 @@
+﻿@model SkinShop.Models.ViewModels.GameDetailsVM
+
+@Styles.Render("~/Content/SkinShopCSS/GameDetails.css")
+
+@{
+    int j = 1;
+}
+
+<div class="caption gradient-text">@Model.Game.Name</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-xs-12 col-sm-12">
+            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.Game.Images.FirstOrDefault().Photo))" alt="@Model.Game.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+        </div>
+        <div class="infoblock col-md-4 col-xs-12 col-sm-12">
+                        <div class="genreblock">
+                            <span class="glyphicon glyphicon-record"></span> Жанр игры: <span class="info">@Model.Game.Genre</span>
+                        </div>
+                        <div class="typeblock">
+                            <span class="glyphicon glyphicon-record"></span> Тип игры: <span class="info">@Model.Game.Type</span>
+                        </div>
+                        <div class="gamelinkblock">
+                            <a href="@Model.Game.GameURL" class="btn btn-info">Сайт игры</a>
+                        </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="gamecaption">
+           Cкины для игры @Model.Game.Name
+        </div>
+        @foreach (var i in Model.Skins)
+        {
+            if (j == 4)
+            {
+                break;
+            }
+            <div class="col-md-3 col-xs-10 col-sm-6 block">
+                <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
+                    <div class="image">
+                        @if (i.Images.FirstOrDefault() != null)
+                        {
+                            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                        }
+                        else
+                        {
+                            <div>Lol</div>
+                        }
+                    </div>
+                    <div class="descriptiontext">
+                        <div class="name">
+                            @i.Name
+                        </div>
+                        <div class="price">
+                            @if (i.Sale > 0)
+                            {
+                                <div class="oldprice">@i.Price uah</div>
+                                <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                            }
+                            else
+                            {
+                                <div class="newprice">@i.Price uah</div>
+                            }
+                        </div>
+                        <div class="characteristics">
+                            <div class="gamenamelocal">
+                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @i.Game.Name
+                            </div>
+                            <div class="type">
+                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @i.SkinType.TypeName
+                            </div>
+                            <div class="rarity" style="color: @i.SkinRarity.Color">
+                                <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @i.SkinRarity.RarityName
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="hide">@(j++)</div>
+        }
+    </div>
+</div>

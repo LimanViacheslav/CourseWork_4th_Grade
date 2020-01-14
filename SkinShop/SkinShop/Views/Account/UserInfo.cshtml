@@ -1,0 +1,52 @@
+﻿@model SkinShop.Models.Account.UserDM
+
+@{
+                /**/
+
+                ViewBag.Title = "UserInfo";
+}
+
+@Styles.Render("~/Content/SkinShopCSS/UserInfo.css")
+
+
+@if (User.Identity.Name != Model.UserName)
+{
+    <div class="caption gradient-text">П р о ф и л ь</div>
+}
+else
+{
+    <div class="caption gradient-text">Л и ч н ы й К а б и н е т</div>
+}
+
+    <div class="common">
+        @if (Model.Role != null)
+        {
+            if (Model.Role == "admin")
+            {
+                <h4 class="admin role">Админ всея Руси</h4>
+            }
+            if (Model.Role == "user")
+            {
+                <h4 class="user role">Пользователь</h4>
+            }
+            if (Model.Role == "manager")
+            {
+                <h4 class="manager role">Менеджер</h4>
+            }
+        }
+            <div class="title">
+                Электронная почта: @Html.DisplayFor(model => model.UserName)
+            </div>
+
+            <div class="title">
+                Псевдоним: @Html.DisplayFor(model => model.UserName)
+            </div>
+
+            <div class="title">
+                Имя: @Html.DisplayFor(model => model.Name)
+            </div>
+
+            <div class="title">
+                Номер телефона: @Html.DisplayFor(model => model.PhoneNumber)
+            </div>
+    </div>

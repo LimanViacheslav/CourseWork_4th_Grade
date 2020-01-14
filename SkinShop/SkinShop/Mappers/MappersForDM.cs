@@ -20,7 +20,7 @@ namespace SkinShop.Mappers
                 .ForMember(x => x.Game, c => c.MapFrom(k => ToGameDM.Map<GameDTO, GameDM>(k.Game)))
                 .ForMember(x => x.SkinRarity, c => c.MapFrom(k => ToSkinRarityDM.Map<SkinRarityDTO, SkinRaretyDM>(k.SkinRarity)))
                 .ForMember(x => x.SkinType, c => c.MapFrom(k => ToSkinTypeDM.Map<SkinTypeDTO, SkinTypeDM>(k.SkinType)))
-                .ForMember(x => x.Images, c => c.MapFrom(k => ToImageDM.Map<ICollection<ImageDTO>, ICollection<ImageDM>>(k.Images)))
+                .ForMember(x => x.Images, c => c.MapFrom(k => ToImageDM.Map<ICollection<ImageDTO>, List<ImageDM>>(k.Images)))
                 )
                     .CreateMapper();
             }
@@ -143,7 +143,7 @@ namespace SkinShop.Mappers
                 .ForMember(x => x.Game, c => c.MapFrom(k => ToGameDTO.Map<GameDM, GameDTO>(k.Game)))
                 .ForMember(x => x.SkinRarity, c => c.MapFrom(k => ToSkinRarityDTO.Map<SkinRaretyDM, SkinRarityDTO>(k.SkinRarity)))
                 .ForMember(x => x.SkinType, c => c.MapFrom(k => ToSkinTypeDTO.Map<SkinTypeDM, SkinTypeDTO>(k.SkinType)))
-                .ForMember(x => x.Images, c => c.MapFrom(k => ToImageDTO.Map<ICollection<ImageDM>, ICollection<ImageDTO>>(k.Images)))
+                .ForMember(x => x.Images, c => c.MapFrom(k => ToImageDTO.Map<List<ImageDM>, ICollection<ImageDTO>>(k.Images)))
                 )
                     .CreateMapper();
             }

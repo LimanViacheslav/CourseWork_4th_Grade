@@ -40,6 +40,26 @@ namespace SkinShop
                      "~/Content/SkinShopCSS/Orders.css"));
             bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Favorites.css").Include(
                      "~/Content/SkinShopCSS/Favorites.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Users.css").Include(
+                                 "~/Content/SkinShopCSS/Users.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/UserInfo.css").Include(
+                                "~/Content/SkinShopCSS/UserInfo.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Main.css").Include(
+                               "~/Content/SkinShopCSS/Main.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/GameDetails.css").Include(
+                               "~/Content/SkinShopCSS/GameDetails.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/GameDetails.css").Include(
+                               "~/Content/SkinShopCSS/GameDetails.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Register.css").Include(
+                               "~/Content/SkinShopCSS/Register.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/Login.css").Include(
+                               "~/Content/SkinShopCSS/Login.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/SuccessRegister.css").Include(
+                               "~/Content/SkinShopCSS/SuccessRegister.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/CreateGame.css").Include(
+                               "~/Content/SkinShopCSS/CreateGame.css"));
+            bundles.Add(new StyleBundle("~/Content/SkinShopCSS/CreateSkin.css").Include(
+                               "~/Content/SkinShopCSS/CreateSkin.css"));
         }
     }
 }

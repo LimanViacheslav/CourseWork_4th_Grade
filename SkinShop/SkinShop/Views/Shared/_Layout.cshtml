@@ -4,10 +4,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Inria+Serif%7CMa+Shan+Zheng%7COswald&display=swap" rel="stylesheet">
     <title>@ViewBag.Title – приложение ASP.NET</title>
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/SkinShopCSS/Layout.css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/scripts/jquery-3.3.1.min.js")
+    @Scripts.Render("~/scripts/jquery.unobtrusive-ajax.js")
+    <link rel="stylesheet" href="~/Content/ScriptsSkinShop/fm.revealator.jquery.css">
+    <script src="~/Content/ScriptsSkinShop/fm.revealator.jquery.js"></script>
+    <script src="~/Content/ScriptsSkinShop/jquery-1.11.3.min.js"></script>
 </head>
 <body class="main">
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -18,7 +24,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("SkinSForever", "Info", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("SkinSForever", "Main", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -29,8 +35,7 @@
                         {
                             <li>@Html.ActionLink("Заказы", "Orders", "Client")</li>
                             <li>@Html.ActionLink("Корзина", "Basket", "Client")</li>
-                            <li>@Html.ActionLink("Желаемое", "Favorites", "Client")</li>
-                            <li>@Html.ActionLink("Контакы", "Contact", "Home")</li>
+                            <li>@Html.ActionLink("Избранное", "Favorites", "Client")</li>
                         }
                         else if (User.IsInRole("manager"))
                         {
@@ -41,10 +46,6 @@
                             <li>@Html.ActionLink("Пользователи", "Users", "Admin")</li>
                         }
                     }
-                    else
-                    {
-                        <li>@Html.ActionLink("Контакы", "Contact", "Home")</li>
-                    }
                 </ul>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav right">
@@ -54,7 +55,7 @@
                         }
                         else
                         {
-                            <li>@Html.ActionLink("Личный кабинет", "Profile", "Account")</li>
+                            <li>@Html.ActionLink("Личный кабинет", "UserInfo", "Account")</li>
                             <li>@Html.ActionLink("Выйти", "Logout", "Account")</li>
                         }
                     </ul>
@@ -64,9 +65,26 @@
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year – Харьков<div class="small">Все права защищены</div></p>
+            <div class="copyright">&copy; @DateTime.Now.Year – Харьков<div class="small">Все права защищены</div></div>
+            <div class="icons">
+                <div class="captionicons">Связаться с автором</div>
+                <div class="iconblock">
+                    <a href="https://www.instagram.com/_own_wave_/"><img src="~/Content/Images/Icons/iconfinder_ig_instagram_insta_photo_5340248.png" /></a>
+                </div>
+                <div class="iconblock">
+                    <a href="mailto:nega.nitrogen@gmail.com"><img src="~/Content/Images/Icons/iconfinder_mail_email_e-mail_letter_5340267.png" /></a>
+                </div>
+                <div class="iconblock">
+                    <a href="https://xn--80affa3aj0al.xn--80asehdb/#/im"><img src="~/Content/Images/Icons/iconfinder_telegram_social_media_network_chat_5340247.png" /></a>
+                </div>
+                <div class="iconblock">
+                    <a href="https://vk.com/liman2013"><img src="~/Content/Images/Icons/iconfinder_vk_vkontakte_media_social_5340285.png" /></a>
+                </div>
+                <div class="iconblock">
+                    <a href="https://www.youtube.com/?gl=UA&hl=ru"><img src="~/Content/Images/Icons/iconfinder_youtube_youtuber_video_play_5340279.png" /></a>
+                </div>
+            </div>
         </footer>
     </div>
 

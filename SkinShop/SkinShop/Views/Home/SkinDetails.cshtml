@@ -2,20 +2,20 @@
 
 @{
     ViewBag.Title = "SkinDetails";
+    int j = 1;
 }
 
 @Styles.Render("~/Content/SkinShopCSS/SkinDetails.css")
 
-<h2 class="text">@Model.Skin.Name</h2>
-
 <div class="container-fluid">
+    <div class="caption gradient-text">@Model.Skin.Name</div>
     <div class="col-md-8 col-md-offset-0 col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1">
         <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.Skin.Images.FirstOrDefault().Photo))" alt="@Model.Skin.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
     </div>
     <div class="col-md-4 col-md-offset-0 col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1">
         <div class="text">
             <div class="gamename">
-                @Model.Skin.Game.Name
+                <a href="@Url.Action("GameDetails", "Home", new {id = Model.Skin.Game.Id})" class="gamelink">@Model.Skin.Game.Name</a>
             </div>
             <div class="row">
                 <div class="priceblock col-md-12">
@@ -28,7 +28,7 @@
                     {
                         <div class="newprice">@Model.Skin.Price uah</div>
                     }
-                    @if (!User.IsInRole("admin"))
+                    @if (User.IsInRole("user"))
                     {
                         <div class="buttons">
                             @if (!Model.IsSkinAlreadyInFavorites)
@@ -66,6 +66,62 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="gamecaption">
+                Другие скины для игры @Model.Skin.Game.Name
+            </div>
+            @foreach (var i in Model.OtherSkins)
+            {
+                if (j == 4)
+                {
+                    break;
+                }
+                <div class="col-md-3 col-xs-10 col-sm-6 block">
+                    <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
+                        <div class="image">
+                            @if (i.Images.FirstOrDefault() != null)
+                            {
+                                <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                            }
+                            else
+                            {
+                                <div>Lol</div>
+                            }
+                        </div>
+                        <div class="descriptiontext">
+                            <div class="name">
+                                @i.Name
+                            </div>
+                            <div class="price">
+                                @if (i.Sale > 0)
+                                {
+                                    <div class="oldprice">@i.Price uah</div>
+                                    <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
+                                }
+                                else
+                                {
+                                    <div class="newprice">@i.Price uah</div>
+                                }
+                            </div>
+                            <div class="characteristics">
+                                <div class="gamenamelocal">
+                                    <span class="addtext"><span class="glyphicon glyphicon-record"></span> Игра:</span> @i.Game.Name
+                                </div>
+                                <div class="type">
+                                    <span class="addtext"><span class="glyphicon glyphicon-record"></span> Тип:</span> @i.SkinType.TypeName
+                                </div>
+                                <div class="rarity" style="color: @i.SkinRarity.Color">
+                                    <span class="addtext"><span class="glyphicon glyphicon-record"></span> Редкость:</span> @i.SkinRarity.RarityName
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="hide">@(j++)</div>
+            }
         </div>
     </div>
 </div>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SkinShop.Models.SkinShop;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -36,6 +37,8 @@ namespace SkinShop.Models.ViewModels
 
         [Display(Name = "Изображение")]
         public HttpPostedFileBase Image { get; set; }
+
+        public ImageDM ImageInDatebase { get; set; }
 
         [Display(Name = "Подпись к изображению")]
         [StringLength(100, MinimumLength = 2, ErrorMessage = "Недопустимая длина")]

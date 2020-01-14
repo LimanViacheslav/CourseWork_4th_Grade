@@ -6,7 +6,7 @@
 
 @Styles.Render("~/Content/SkinShopCSS/Basket.css")
 
-<h2>Корзина</h2>
+<div class="caption gradient-text">К о р з и н а</div>
 
 @{
     double price = 0;
@@ -50,67 +50,67 @@ else
     <div class="container-fluid">
         @foreach (var i in Model.Skins)
         {
-            <div class="block">
-                <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="link">
-                    <div class="image">
-                        @if (i.Images.FirstOrDefault() != null)
-                        {
-                            <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
-                        }
-                    </div>
-                    <div class="text">
-                        <div class="name">
-                            @i.Name
+            <div class="comblock">
+                <div class="block col-md-8 col-md-offset-1 col-sm-8 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                    <a href="@Url.Action("SkinDetails", "Home", new { id = i.Id })" class="linkcustom">
+                        <div class="row">
+                            <div class="image col-md-8 col-md-offset-1 col-sm-8 col-sm-offset-1 col-xs-8 col-xs-offset-1">
+                                @if (i.Images.FirstOrDefault() != null)
+                                {
+                                    <img src="@String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(i.Images.FirstOrDefault().Photo))" alt="@i.Images.FirstOrDefault().Text" class="img-responsive imgcustom">
+                                }
+                            </div>
+                            <div class="textblock col-md-3 col-md-offset-1 col-sm-3 col-sm-offset-1 col-xs-3 col-xs-offset-1">
+                                <div class="name">
+                                    @i.Name
+                                </div>
+                                <div class="price">
+                                    @if (i.Sale > 0)
+                                    {
+                                        <div name="priceinput" class="newprice"><input class="inputprice form-control" value="@(i.Price - ((i.Price * i.Sale) / 100)) uah" disabled="disabled"/></div>
+                                        price += (i.Price - ((i.Price * i.Sale) / 100));
+                                    }
+                                    else
+                                    {
+                                        <div name="priceinput" class="newprice"><input class="inputprice form-control" value="@i.Price uah" disabled="disabled" /></div>
+                                        price += i.Price;
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <div class="price">
-                            @if (i.Sale > 0)
-                            {
-                                <div class="oldprice">@i.Price uah</div>
-                                <div class="newprice">@(i.Price - ((i.Price * i.Sale) / 100)) uah</div>
-                                price += (i.Price - ((i.Price * i.Sale) / 100));
-                            }
-                            else
-                            {
-                                <div class="newprice">@i.Price uah</div>
-                                price += i.Price;
-                            }
-                        </div>
-                    </div>
-                </a>
-                @if (i.Game.IsThingGame)
-                {
-                    <input name="counts" type="number" min="1" max="30" value="1" onchange="ChangeCount(@prices, @discounts)" />
-                }
-                else
-                {
-                    <input name="counts" type="number" value="1" />
-                }
-            </div>
-            <div class="deletebutton">
-                <a href="@Url.Action("DeleteFromBasket", "Client", new { skinid = i.Id })" class="form-control">Удалить</a>
+                    </a>
+                </div>
+                <div class="countblock col-md-2 col-md-offset-1 col-sm-2 col-sm-offset-1 col-xs-5 col-xs-offset-0">
+                    @if (i.Game.IsThingGame)
+                    {
+                        <input name="counts" type="number" min="1" max="30" value="1" class="form-control counts"/>
+                    }
+                    else
+                    {
+                        <input name="counts" type="number" min="1" value="1" class="form-control counts"/>
+                    }
+                </div>
+                <div class="deletebutton col-md-2 col-md-offset-1 col-sm-2 col-sm-offset-1 col-xs-5 col-xs-offset-0">
+                    <a href="@Url.Action("DeleteFromBasket", "Client", new { skinid = i.Id })" class="form-control btn-danger">Удалить</a>
+                </div>
             </div>
         }
     </div>
     <div class="allprice">
-        Всего к оплате: <span class="sumprice">@price</span>
+        Всего к оплате: <span class="sumprice">@price</span> uah
     </div>
-    <input type="submit" value="Заказать" />
+    <input type="submit" value="Заказать" class="orderbutton form-control btn-success"/>
 }
 
 
-@*<script>
-        function ChangeCount(price, discount) {
-            let counts = document.getElementsByName("counts");
-            let result = 0;
-            for (let i = 0; i < counts.length; i++) {
-                if (discount[i] > 0) {
-                    result += counts[i].value * (price[i] - (price[i] * discount[i] / 100));
-                }
-                else {
-                    result += counts[i].value * price[i];
-                }
-            }
-            let element = document.getElementsByClassName("sumprice");
-            element.innerHTML = result;
+<script>
+    $('.counts').change(function () {
+        let counts = $('.counts');
+        let prices = $('.inputprice');
+        let result = 0;
+        for (let i = 0; i < counts.length; i++) {
+            result += counts[i].value * parseInt(prices[i].value);
         }
-    </script>*@
+        $('.sumprice').html(result);
+    })
+</script>

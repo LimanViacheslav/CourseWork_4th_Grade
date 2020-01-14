@@ -3,7 +3,11 @@ using Microsoft.Owin.Security;
 using SkinShop.BLL.Identity.IdentityDTO;
 using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.Identity.Interfaces;
+using SkinShop.BLL.SkinShop.Services;
+using SkinShop.Filters;
+using SkinShop.Mappers;
 using SkinShop.Models;
+using SkinShop.Models.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +18,12 @@ using System.Web.Mvc;
 
 namespace SkinShop.Controllers
 {
+    [BanAttribute]
     public class AccountController : Controller
     {
+        Service _service = new Service();
+        MappersForDM _mappers = new MappersForDM();
+
         private IUserService UserService
         {
             get
@@ -32,6 +40,14 @@ namespace SkinShop.Controllers
             }
         }
 
+        public ActionResult UserInfo(string name="")
+        {
+            if (name == "")
+                name = User.Identity.Name;
+            UserDM user = _mappers.ToUserDM.Map<UserDTO, UserDM>(_service.StoreService.GetUserByName(name));
+            return View(user);
+        }
+
         public ActionResult Login()
         {
             return View();
@@ -41,23 +57,42 @@ namespace SkinShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginModel model)
         {
-            await SetInitialDataAsync();
-            if (ModelState.IsValid)
+            if(User.Identity.Name == "")
             {
-                UserDTO userDto = new UserDTO { Email = model.Email, Password = model.Password };
-                ClaimsIdentity claim = await UserService.Authenticate(userDto);
-                if (claim == null)
+                await SetInitialDataAsync();
+                if (ModelState.IsValid)
                 {
-                    ModelState.AddModelError("", "Неверный логин или пароль.");
-                }
-                else
-                {
-                    AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties
+                    UserDTO currentUser = _service.StoreService.GetUserByName(model.Email);
+                    if(currentUser == null || !currentUser.IsBanned)
                     {
-                        IsPersistent = true
-                    }, claim);
-                    return RedirectToAction("Index", "Home");
+                        UserDTO userDto = new UserDTO { Email = model.Email, Password = model.Password };
+                        ClaimsIdentity claim = await UserService.Authenticate(userDto);
+                        if (claim == null)
+                        {
+                            ModelState.AddModelError("", "Неверный логин или пароль.");
+                        }
+                        else
+                        {
+                            AuthenticationManager.SignOut();
+                            AuthenticationManager.SignIn(new AuthenticationProperties
+                            {
+                                IsPersistent = true
+                            }, claim);
+                            return RedirectToAction("Index", "Home");
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Вы были забанены, Вам запрещён доступ");
+                    }
+                }
+            }
+            else
+            {
+                UserDTO user = _service.StoreService.GetUserByName(User.Identity.Name);
+                if(user.IsBanned)
+                {
+                    ModelState.AddModelError("", "Вы были забанены, Вам запрещён доступ");
                 }
             }
             return View(model);
@@ -66,7 +101,7 @@ namespace SkinShop.Controllers
         public ActionResult Logout()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         public ActionResult Register()
@@ -97,6 +132,11 @@ namespace SkinShop.Controllers
                     ModelState.AddModelError(operationDetails.Property, operationDetails.Message);
             }
             return View(model);
+        }
+
+        public ActionResult SuccessRegister()
+        {
+            return View();
         }
 
         private async Task SetInitialDataAsync()

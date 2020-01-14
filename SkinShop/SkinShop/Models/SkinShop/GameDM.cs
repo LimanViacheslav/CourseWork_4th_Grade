@@ -19,6 +19,6 @@ namespace SkinShop.Models.SkinShop
 
         public bool IsThingGame { get; set; }
 
-        public virtual ICollection<ImageDM> Images { get; set; }
+        public virtual List<ImageDM> Images { get; set; }
     }
 }

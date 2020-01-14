@@ -10,7 +10,7 @@ namespace SkinShop.BLL.SkinShop.SkinShopDTO
     {
         public int Id { get; set; }
 
-        public SkinDTO Skin { get; set; }
+        public virtual SkinDTO Skin { get; set; }
 
         public int Count { get; set; }
     }

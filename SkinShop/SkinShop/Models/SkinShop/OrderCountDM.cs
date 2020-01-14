@@ -9,7 +9,7 @@ namespace SkinShop.Models.SkinShop
     {
         public int Id { get; set; }
 
-        public SkinDM Skin { get; set; }
+        public virtual SkinDM Skin { get; set; }
 
         public int Count { get; set; }
     }

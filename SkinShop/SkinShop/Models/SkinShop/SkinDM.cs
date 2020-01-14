@@ -23,6 +23,6 @@ namespace SkinShop.Models.SkinShop
 
         public string Description { get; set; }
 
-        public virtual ICollection<ImageDM> Images { get; set; }
+        public virtual List<ImageDM> Images { get; set; }
     }
 }

@@ -21,13 +21,13 @@ namespace SkinShop.DL.Entities.SkinShop
 
         public string ClientId { get; set; }
 
-        public ClientProfile Client { get; set; }
+        public virtual ClientProfile Client { get; set; }
 
         public virtual ICollection<OrderCount> OrderCounts { get; set; }
 
         public string EmployeeId { get; set; }
 
-        public User Employee { get; set; }
+        public virtual User Employee { get; set; }
 
         public DateTime OrderTime { get; set; }
 

@@ -14,5 +14,7 @@ namespace SkinShop.DL.Entities.Identity
         public string Adres { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public bool IsBanned { get; set; }
     }
 }

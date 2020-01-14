@@ -18,6 +18,8 @@ using Microsoft.AspNet.Identity.Owin;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.Owin.Security;
+using System.Web.SessionState;
+using System.Linq;
 
 namespace SkinShop.Controllers
 {
@@ -43,16 +45,38 @@ namespace SkinShop.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult UpdateSkin(int id = 0)
+        {
+            SkinDM result = _mappers.ToSkinDM.Map<SkinDTO, SkinDM>(_service.ServiceForCRUD.GetSkin(id));
+            SkinCreateVM skin = new SkinCreateVM()
+            {
+                Alt = result.Images[0].Text,
+                ImageInDatebase = result.Images[0],
+                Description = result.Description,
+                Game = result.Game.Name,
+                Name = result.Name,
+                Price = result.Price,
+                Sale = result.Sale,
+                SkinRarity = result.SkinRarity.RarityName,
+                SkinRarityColor = result.SkinRarity.Color,
+                SkinType = result.SkinType.TypeName
+            };
+            return View("CreateSkin",skin);
+        }
+
+        [HttpGet]
         public ActionResult CreateSkin()
         {
             List<GameDM> games = _mappers.ToGameDM.Map<ICollection<GameDTO>, List<GameDM>>(_service.ServiceForCRUD.GetGames());
-            SelectList gameNames = new SelectList(games, "Name", "Name");
-            ViewData["GameNames"] = gameNames;
+            var items = games.Select(x => new SelectListItem() { Text = x.Name, Value = x.Name }).ToList();
+            
+            ViewBag.Game = items;
             return View();
         }
 
         [HttpPost]
-        public ActionResult CreateSkin([Bind(Include = "Game")] SkinCreateVM item)
+        public ActionResult CreateSkin(SkinCreateVM item)
         {
             if (ModelState.IsValid)
             {
@@ -68,6 +92,11 @@ namespace SkinShop.Controllers
 
                     skin.Images = new List<ImageDTO>();
                     skin.Images.Add(image);
+                }
+                else
+                {
+                    skin.Images = new List<ImageDTO>();
+                    skin.Images.Add(_mappers.ToImageDTO.Map<ImageDM, ImageDTO>(item.ImageInDatebase));
                 }
                 if (item.Game != "")
                     skin.Game = new GameDTO() { Name = item.Game };
@@ -105,6 +134,27 @@ namespace SkinShop.Controllers
         }
 
         [HttpGet]
+        public ActionResult UpdateGame(int id = 0)
+        {
+            GameDM result = _mappers.ToGameDM.Map<GameDTO, GameDM>(_service.ServiceForCRUD.GetGame(id));
+            GameCreateVM game = new GameCreateVM()
+            {
+                GameURL = result.GameURL,
+                Genre = result.Genre,
+                IsThingGame = result.IsThingGame,
+                Name = result.Name,
+                Type = result.Type
+            };
+
+            if(result.Images.FirstOrDefault() != null)
+            {
+                game.Alt = result.Images[0].Text;
+                game.ImageInDatebase = result.Images[0];
+            }
+            return View("CreateGame", game);
+        }
+
+        [HttpGet]
         public ActionResult CreateGame()
         {
             return View();
@@ -126,6 +176,11 @@ namespace SkinShop.Controllers
 
                     game.Images = new List<ImageDTO>();
                     game.Images.Add(image);
+                }
+                else
+                {
+                    game.Images = new List<ImageDTO>();
+                    game.Images.Add(_mappers.ToImageDTO.Map<ImageDM, ImageDTO>(item.ImageInDatebase));
                 }
                 OperationDetails result = _service.ServiceForCRUD.CreateGame(game);
                 ViewBag.Result = result.Message;
@@ -154,20 +209,87 @@ namespace SkinShop.Controllers
                 if (result.Succedeed)
                 {
                     ViewBag.Result = result.Message;
-                    return View();
+                    return RedirectToAction("Register", "Account");
                 }
                 else
                     ModelState.AddModelError(result.Property, result.Message);
             }
-            return View(model);
+            return RedirectToAction("Register", "Account");
         }
 
         public ActionResult Users()
         {
             List<UserDM> users = _mappers.ToUserDM.Map<IEnumerable<UserDTO>, List<UserDM>>(_service.StoreService.GetUsers());
-            List<ClientProfileDM> clients = _mappers.ToClientProfileDM.Map<IEnumerable<ClientProfileDTO>, List<ClientProfileDM>>(_service.StoreService.GetClients());
-            UsersVM usersModel = new UsersVM() { Clients = clients, Users = users };
-            return View(usersModel);
+            return View(users);
+        }
+
+        public ActionResult UserFilters(string userName = "", string[] roles = null)
+        {
+            List<UserDM> result = _mappers.ToUserDM.Map<IEnumerable<UserDTO>, List<UserDM>>(_service.StoreService.GetUsers());
+
+            if(userName != "")
+            {
+                result = (from t in result
+                         where t.Name.Contains(userName) || t.Email.Contains(userName)
+                         select t).ToList();
+            }
+            
+            if(roles != null)
+            {
+                List<UserDM> _users = new List<UserDM>();
+                foreach(var i in roles)
+                {
+                    List<UserDM> localUsers = (from t in result
+                                              where t.Role == i
+                                              select t).ToList();
+                    _users.AddRange(localUsers);
+                }
+                result = _users;
+            }
+
+            return PartialView(result);
+        }
+
+        public ActionResult Ban(string id)
+        {
+            if (id == "")
+                return RedirectToAction("PageNotFound", "Home");
+            UserService.Ban(id);
+            return RedirectToAction("Users");
+        }
+
+        public ActionResult Unban(string id)
+        {
+            if (id == "")
+                return RedirectToAction("PageNotFound", "Home");
+            UserService.Unban(id);
+            return RedirectToAction("Users");
+        }
+
+        public ActionResult DeleteSkin(int? id)
+        {
+            if(id != null)
+            {
+                OperationDetails result = _service.CommonOperations.SoftDelete(Tables.Skins, Convert.ToInt32(id));
+                if (result.Succedeed)
+                {
+                    return RedirectToAction("SkinFilters", "Home");
+                }
+            }
+            return RedirectToAction("PageNotFound", "Home");
+        }
+
+        public ActionResult DeleteGame(int? id)
+        {
+            if (id != null)
+            {
+                OperationDetails result = _service.CommonOperations.SoftDelete(Tables.Games, Convert.ToInt32(id));
+                if (result.Succedeed)
+                {
+                    return RedirectToAction("Main", "Home");
+                }
+            }
+            return RedirectToAction("PageNotFound", "Home");
         }
     }
 }

@@ -2,9 +2,11 @@
 using SkinShop.BLL.Identity.Infrastructure;
 using SkinShop.BLL.SkinShop.Services;
 using SkinShop.BLL.SkinShop.SkinShopDTO;
+using SkinShop.Filters;
 using SkinShop.Mappers;
 using SkinShop.Models.Account;
 using SkinShop.Models.SkinShop;
+using SkinShop.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ using System.Web.Mvc;
 
 namespace SkinShop.Controllers
 {
+    [BanAttribute]
     public class ClientController : Controller
     {
         Service _service = new Service();
@@ -60,18 +63,123 @@ namespace SkinShop.Controllers
         [HttpGet]
         public ActionResult Orders()
         {
+            OrdersVM reslt = new OrdersVM();
             IEnumerable<OrderDM> orders;
             if (User.IsInRole("manager"))
             {
-                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, List<OrderDM>>(_service.StoreService.GetOrdersForEmployee());
+                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrdersForEmployee());
             }
             else
             {
                 orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrders(User.Identity.Name));
             }
-            return View(orders);
+            reslt.Orders = orders.ToList();
+            reslt.MinPrice = Convert.ToInt32((from t in orders
+                                              orderby t.Price ascending
+                                              select t.Price).First());
+            reslt.MaxPrice = Convert.ToInt32((from t in orders
+                                              orderby t.Price descending
+                                              select t.Price).First());
+            return View(reslt);
         }
         
+        public ActionResult OrderFilters(OrderStatusDM[] status = null, string userName = "", string minPrice = "", string maxPrice = "", string order = "")
+        {
+            OrdersVM reslt = new OrdersVM();
+            IEnumerable<OrderDM> orders;
+            if (User.IsInRole("manager"))
+            {
+                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrdersForEmployee());
+            }
+            else
+            {
+                orders = _mappers.ToOrderDM.Map<IEnumerable<OrderDTO>, IEnumerable<OrderDM>>(_service.StoreService.GetOrders(User.Identity.Name));
+            }
+            if (userName != "")
+            {
+                orders = from t in orders
+                         where t.Client.Name.Contains(userName)
+                         select t;
+            }
+
+            if (status != null)
+            {
+                List<OrderDM> _orders = new List<OrderDM>();
+                foreach (var i in status)
+                {
+                    List<OrderDM> localOrder;
+                    localOrder = (from t in orders
+                             where t.Status == i
+                             select t).ToList();
+                    _orders.AddRange(localOrder);
+                }
+                orders = _orders;
+            }
+
+            if (minPrice != "" && maxPrice != "")
+            {
+                int min = int.Parse(minPrice);
+                int max = int.Parse(maxPrice);
+                orders = from t in orders
+                         where t.Price >= min && t.Price <= max
+                         select t;
+            }
+            else if (minPrice != "")
+            {
+                int min = int.Parse(minPrice);
+                orders = from t in orders
+                         where t.Price >= min
+                         select t;
+            }
+            else if (maxPrice != "")
+            {
+                int max = int.Parse(maxPrice);
+                orders = from t in orders
+                         where t.Price <= max
+                         select t;
+            }
+
+            if (order != "")
+            {
+                switch (order)
+                {
+                    case "По алфавиту А-Я (клиент)":
+                        orders = from t in orders
+                                 orderby t.Client.Name ascending
+                                 select t;
+                        break;
+                    case "По алфавиту Я-А (клиент)":
+                        orders = from t in orders
+                                 orderby t.Client.Name descending
+                                 select t;
+                        break;
+                    case "По увеличению стоимости":
+                        orders = from t in orders
+                                 orderby t.Price ascending
+                                 select t;
+                        break;
+                    case "По уменьшению стоимости":
+                        orders = from t in orders
+                                 orderby t.Price descending
+                                 select t;
+                        break;
+                    case "По увеличению даты":
+                        orders = from t in orders
+                                 orderby t.OrderTime ascending
+                                 select t;
+                        break;
+                    case "По убыванию даты":
+                        orders = from t in orders
+                                 orderby t.OrderTime descending
+                                 select t;
+                        break;
+                }
+            }
+
+            reslt.Orders = orders.ToList();
+            return PartialView(reslt);
+        }
+
         [HttpGet]
         public ActionResult Basket()
         {
@@ -97,9 +205,9 @@ namespace SkinShop.Controllers
             OperationDetails result = _service.StoreService.MakeOrder(skinsId, counts, client);
             if(result.Succedeed)
             {
-                foreach(var i in basket.Skins)
+                foreach(var i in skinsId)
                 {
-                    _service.StoreService.DeleteFromBasket(i.Id);
+                    _service.StoreService.DeleteFromBasket(i, client);
                 }
                 return RedirectToAction("Orders");
             }
@@ -117,5 +225,28 @@ namespace SkinShop.Controllers
             _service.StoreService.DeleteFromFavorites(Convert.ToInt32(skinId), userName);
             return RedirectToAction("Basket");
         }
+
+        public ActionResult ConfirmOrder(int? id)
+        {
+            if(id == null)
+            {
+                return RedirectToAction("PageNotFound", "Home");
+            }
+
+            _service.StoreService.ConfirmOrder(id, User.Identity.Name);
+            return RedirectToAction("Orders");
+        }
+
+        public ActionResult Reject(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("PageNotFound", "Home");
+            }
+
+            _service.StoreService.Reject(id, User.Identity.Name);
+            return RedirectToAction("Orders");
+        }
+        
     }
 }
